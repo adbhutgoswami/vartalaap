@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vartaalaap | इंटरव्यू मंच</title>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+:root {
+--brand:#e67e22;
+--dark:#2c3e50;
+--bg:#f4f7f6;
+}
+
+body{
+font-family:Segoe UI, Arial;
+margin:0;
+background:var(--bg);
+}
+
+header{
+background:white;
+padding:30px;
+text-align:center;
+border-bottom:5px solid var(--brand);
+}
+
+.logo{
+font-size:40px;
+font-weight:bold;
+}
+
+.logo span{
+color:var(--brand);
+}
+
+.container{
+max-width:850px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+margin-bottom:25px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+padding:12px;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+flex:1;
+color:white;
+}
+
+.publish{
+background:var(--brand);
+}
+
+.speak{
+background:#27ae60;
+}
+
+.listen{
+background:#8e44ad;
+}
+
+.savepdf{
+background:#2980b9;
+}
+
+.interview{
+border-left:6px solid var(--brand);
+padding:15px;
+margin-top:15px;
+background:#fff;
+border-radius:8px;
+}
+
+.lang{
+font-size:12px;
+background:#ffe6d1;
+padding:3px 8px;
+border-radius:4px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1 class="logo">Varta<span>alaap</span></h1>
+<p>हर भाषा, हर कहानी, एक मंच</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>नया इंटरव्यू दर्ज करें</h2>
+
+<input id="guestName" placeholder="नाम (Name)">
+<input id="guestLang" placeholder="भाषा (Hindi / English)">
+
+<textarea id="content"
+rows="6"
+placeholder="यहाँ इंटरव्यू लिखें या बोलकर लिखें...">
+</textarea>
+
+<div class="buttons">
+
+<button class="listen" onclick="startListening()">
+🎙 बोलकर लिखें
+</button>
+
+<button class="speak" onclick="speakText()">
+🔊 पढ़कर सुनाएँ
+</button>
+
+<button class="savepdf" onclick="savePDF()">
+📄 PDF सेव करें
+</button>
+
+<button class="publish" onclick="publishInterview()">
+✅ पब्लिश करें
+</button>
+
+</div>
+
+</div>
+
+<h2 style="text-align:center;">ताज़ा इंटरव्यू</h2>
+
+<div id="feed">
+
+<div class="interview">
+<span class="lang">HINDI</span>
+<h3>डेमो इंटरव्यू</h3>
+<p>यह एक उदाहरण इंटरव्यू है।</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* SPEECH TO TEXT */
+
+let recognition;
+
+function startListening(){
+
+if(!('webkitSpeechRecognition' in window)){
+alert("Speech recognition supported नहीं है");
+return;
+}
+
+recognition =
+new webkitSpeechRecognition();
+
+recognition.lang="hi-IN";
+
+recognition.continuous=false;
+
+recognition.interimResults=false;
+
+recognition.start();
+
+recognition.onresult=function(event){
+
+let speechText =
+event.results[0][0].transcript;
+
+let textarea =
+document.getElementById("content");
+
+textarea.value += speechText + " ";
+
+};
+
+}
+
+
+/* TEXT TO SPEECH */
+
+function speakText(){
+
+let text =
+document.getElementById("content").value;
+
+if(text.trim()==""){
+alert("पहले टेक्स्ट लिखें");
+return;
+}
+
+window.speechSynthesis.cancel();
+
+let speech =
+new SpeechSynthesisUtterance(text);
+
+speech.lang="hi-IN";
+
+window.speechSynthesis.speak(speech);
+
+}
+
+
+/* SAVE PDF */
+
+function savePDF(){
+
+const { jsPDF } =
+window.jspdf;
+
+let name =
+document.getElementById("guestName").value;
+
+let lang =
+document.getElementById("guestLang").value;
+
+let content =
+document.getElementById("content").value;
+
+if(content.trim()==""){
+alert("पहले इंटरव्यू लिखें");
+return;
+}
+
+let doc =
+new jsPDF();
+
+doc.setFont("Helvetica");
+
+doc.setFontSize(14);
+
+doc.text("VARTAALAAP INTERVIEW",10,10);
+
+doc.text("Name: "+name,10,25);
+
+doc.text("Language: "+lang,10,35);
+
+let lines =
+doc.splitTextToSize(content,180);
+
+doc.text(lines,10,50);
+
+doc.save("Interview_"+name+".pdf");
+
+}
+
+
+/* PUBLISH INTERVIEW */
+
+function publishInterview(){
+
+let name =
+document.getElementById("guestName").value;
+
+let lang =
+document.getElementById("guestLang").value;
+
+let content =
+document.getElementById("content").value;
+
+if(name=="" || content==""){
+alert("पूरा इंटरव्यू भरें");
+return;
+}
+
+let box =
+document.createElement("div");
+
+box.className="interview";
+
+box.innerHTML=`
+<span class="lang">
+${lang.toUpperCase()}
+</span>
+
+<h3>${name}</h3>
+
+<p>${content}</p>
+`;
+
+document
+.getElementById("feed")
+.prepend(box);
+
+alert("इंटरव्यू पब्लिश हो गया");
+
+}
+
+</script>
+
+</body>
+
+</html>
