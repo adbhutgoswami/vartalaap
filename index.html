@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="hi">
 
 <head>
@@ -7,7 +8,6 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
-<!-- PDF Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -79,21 +79,10 @@ flex:1;
 color:white;
 }
 
-.publish{
-background:var(--brand);
-}
-
-.speak{
-background:#27ae60;
-}
-
-.listen{
-background:#8e44ad;
-}
-
-.savepdf{
-background:#2980b9;
-}
+.publish{ background:var(--brand); }
+.speak{ background:#27ae60; }
+.listen{ background:#8e44ad; }
+.savepdf{ background:#2980b9; }
 
 .interview{
 border-left:6px solid var(--brand);
@@ -109,6 +98,15 @@ background:#ffe6d1;
 padding:3px 8px;
 border-radius:4px;
 font-weight:bold;
+}
+
+.photo{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:10px;
+border:2px solid #ddd;
 }
 
 </style>
@@ -130,6 +128,8 @@ font-weight:bold;
 
 <input id="guestName" placeholder="नाम (Name)">
 <input id="guestLang" placeholder="भाषा (Hindi / English)">
+
+<label>📷 फोटो अपलोड करें</label> <input type="file" id="guestPhoto" accept="image/*">
 
 <textarea id="content"
 rows="6"
@@ -160,23 +160,15 @@ placeholder="यहाँ इंटरव्यू लिखें या बो
 
 <h2 style="text-align:center;">ताज़ा इंटरव्यू</h2>
 
-<div id="feed">
-
-<div class="interview">
-<span class="lang">HINDI</span>
-<h3>डेमो इंटरव्यू</h3>
-<p>यह एक उदाहरण इंटरव्यू है।</p>
-</div>
-
-</div>
+<div id="feed"></div>
 
 </div>
 
 <script>
 
-/* SPEECH TO TEXT */
-
 let recognition;
+
+/* SPEECH TO TEXT */
 
 function startListening(){
 
@@ -185,15 +177,9 @@ alert("Speech recognition supported नहीं है");
 return;
 }
 
-recognition =
-new webkitSpeechRecognition();
+recognition = new webkitSpeechRecognition();
 
 recognition.lang="hi-IN";
-
-recognition.continuous=false;
-
-recognition.interimResults=false;
-
 recognition.start();
 
 recognition.onresult=function(event){
@@ -209,7 +195,6 @@ textarea.value += speechText + " ";
 };
 
 }
-
 
 /* TEXT TO SPEECH */
 
@@ -234,13 +219,11 @@ window.speechSynthesis.speak(speech);
 
 }
 
-
 /* SAVE PDF */
 
 function savePDF(){
 
-const { jsPDF } =
-window.jspdf;
+const { jsPDF } = window.jspdf;
 
 let name =
 document.getElementById("guestName").value;
@@ -251,22 +234,10 @@ document.getElementById("guestLang").value;
 let content =
 document.getElementById("content").value;
 
-if(content.trim()==""){
-alert("पहले इंटरव्यू लिखें");
-return;
-}
-
-let doc =
-new jsPDF();
-
-doc.setFont("Helvetica");
-
-doc.setFontSize(14);
+let doc = new jsPDF();
 
 doc.text("VARTAALAAP INTERVIEW",10,10);
-
 doc.text("Name: "+name,10,25);
-
 doc.text("Language: "+lang,10,35);
 
 let lines =
@@ -278,8 +249,7 @@ doc.save("Interview_"+name+".pdf");
 
 }
 
-
-/* PUBLISH INTERVIEW */
+/* PUBLISH INTERVIEW WITH PHOTO */
 
 function publishInterview(){
 
@@ -292,10 +262,44 @@ document.getElementById("guestLang").value;
 let content =
 document.getElementById("content").value;
 
+let photoInput =
+document.getElementById("guestPhoto");
+
 if(name=="" || content==""){
 alert("पूरा इंटरव्यू भरें");
 return;
 }
+
+let reader = new FileReader();
+
+reader.onload=function(e){
+
+let box =
+document.createElement("div");
+
+box.className="interview";
+
+box.innerHTML=`
+<img src="${e.target.result}" class="photo">
+
+<span class="lang">
+${lang.toUpperCase()}
+</span>
+
+<h3>${name}</h3>
+
+<p>${content}</p>
+`;
+
+document
+.getElementById("feed")
+.prepend(box);
+
+};
+
+if(photoInput.files[0]){
+reader.readAsDataURL(photoInput.files[0]);
+}else{
 
 let box =
 document.createElement("div");
@@ -315,6 +319,8 @@ ${lang.toUpperCase()}
 document
 .getElementById("feed")
 .prepend(box);
+
+}
 
 alert("इंटरव्यू पब्लिश हो गया");
 
