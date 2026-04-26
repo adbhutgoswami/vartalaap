@@ -146,7 +146,63 @@ placeholder="यहाँ इंटरव्यू लिखें या बो
 🔊 पढ़कर सुनाएँ
 </button>
 
-<button class="savepdf" onclick="savePDF()">
+<button class="savepdf" onclick="async function savePDF(){
+
+const { jsPDF } = window.jspdf;
+
+let name =
+document.getElementById("guestName").value;
+
+let lang =
+document.getElementById("guestLang").value;
+
+let content =
+document.getElementById("content").value;
+
+if(content.trim()==""){
+alert("पहले इंटरव्यू लिखें");
+return;
+}
+
+let response =
+await fetch("NotoSansDevanagari-Regular.ttf");
+
+let font =
+await response.arrayBuffer();
+
+let doc =
+new jsPDF();
+
+doc.addFileToVFS(
+"NotoSans.ttf",
+font
+);
+
+doc.addFont(
+"NotoSans.ttf",
+"NotoSans",
+"normal"
+);
+
+doc.setFont("NotoSans");
+
+doc.setFontSize(14);
+
+doc.text("VARTAALAAP INTERVIEW",10,10);
+
+doc.text("Name: "+name,10,25);
+
+doc.text("Language: "+lang,10,35);
+
+let lines =
+doc.splitTextToSize(content,180);
+
+doc.text(lines,10,50);
+
+doc.save("Interview_"+name+".pdf");
+
+}
+">
 📄 PDF सेव करें
 </button>
 
