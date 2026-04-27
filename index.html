@@ -153,11 +153,11 @@ border-radius:8px;
 
 }
 
-/* PDF AREA */
+/* PDF LAYOUT */
 
 #pdfArea{
 
-width:210mm;
+width:800px;
 padding:20px;
 background:white;
 
@@ -253,7 +253,7 @@ onclick="copyText()">
 
 </div>
 
-<!-- Hidden PDF Layout -->
+<!-- Hidden PDF Content -->
 
 <div id="pdfArea" style="display:none;">
 
@@ -314,7 +314,7 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* PDF USING IMAGE METHOD */
+/* PDF — IMAGE METHOD */
 
 function savePDF(){
 
@@ -326,8 +326,6 @@ document.getElementById("content").value;
 
 let photoInput =
 document.getElementById("guestPhoto");
-
-/* Fill PDF Area */
 
 document.getElementById("pdfName")
 .innerText="नाम: "+name;
@@ -360,8 +358,6 @@ generatePDF();
 }
 
 }
-
-/* Create PDF */
 
 function generatePDF(){
 
@@ -410,6 +406,8 @@ document.getElementById("content").value;
 let photoInput =
 document.getElementById("guestPhoto");
 
+if(photoInput.files[0]){
+
 let reader =
 new FileReader();
 
@@ -435,8 +433,6 @@ document
 .prepend(box);
 
 };
-
-if(photoInput.files[0]){
 
 reader.readAsDataURL(photoInput.files[0]);
 
