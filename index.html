@@ -8,10 +8,6 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
-<!-- Libraries -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -31,13 +27,6 @@ font-weight:bold;
 background: linear-gradient(90deg,#ff7e5f,#feb47b);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-}
-
-.logo-line{
-display:inline-block;
-width:220px;
-height:4px;
-background: linear-gradient(90deg,#ff7e5f,#6dd5fa);
 }
 
 .tagline{
@@ -75,30 +64,19 @@ border-radius:6px;
 border:1px solid #ccc;
 }
 
-.buttons{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-}
-
 button{
 padding:12px;
+margin:5px;
 border:none;
 border-radius:6px;
 font-weight:bold;
 cursor:pointer;
-flex:1;
 color:white;
 }
 
-.listen{ background:#8e44ad; }
-.speak{ background:#27ae60; }
-.savepdf{ background:#2980b9; }
 .publish{ background:#e67e22; }
-.sharefb{ background:#1877f2; }
-.sharewa{ background:#25d366; }
-.copybtn{ background:#34495e; }
-.shareimg{ background:#9b59b6; }
+.preview{ background:#9b59b6; }
+.download{ background:#27ae60; }
 
 .photo{
 width:120px;
@@ -107,40 +85,25 @@ object-fit:cover;
 border-radius:10px;
 }
 
-.interview{
-border-left:6px solid #e67e22;
-padding:15px;
-margin-top:15px;
-background:#fff;
-border-radius:8px;
-position:relative;
+/* IMAGE PREVIEW */
+
+#previewArea{
+display:none;
+margin-top:20px;
+text-align:center;
 }
 
-.delete-btn{
-position:absolute;
-top:10px;
-right:10px;
-background:red;
-color:white;
-border:none;
-padding:5px 8px;
-cursor:pointer;
-border-radius:5px;
-font-size:12px;
+#previewImage{
+max-width:100%;
+border:2px solid #ccc;
+border-radius:10px;
 }
 
-.date-text{
-font-size:12px;
-color:#777;
-margin-bottom:5px;
-}
-
-/* PDF Layout */
-
-#pdfArea{
-width:800px;
+#posterArea{
+width:700px;
 padding:20px;
 background:white;
+border:2px solid #ddd;
 }
 
 </style>
@@ -153,7 +116,6 @@ background:white;
 
 <h1 class="logo-text">
 Vartaalaap
-<span class="logo-line"></span>
 </h1>
 
 <p class="tagline">
@@ -174,139 +136,63 @@ Vartaalaap
 
 <textarea id="content"
 rows="6"
-placeholder="यहाँ इंटरव्यू लिखें या बोलें">
+placeholder="यहाँ इंटरव्यू लिखें">
 </textarea>
 
-<div class="buttons">
+<br>
 
-<button class="listen"
-onclick="startListening()">
-🎙 बोलकर लिखें
+<button class="preview"
+onclick="createPreview()">
+🖼 Image Preview
 </button>
 
-<button class="speak"
-onclick="speakText()">
-🔊 पढ़ें
-</button>
-
-<button class="savepdf"
-onclick="savePDF()">
-📄 Multi-Page PDF
-</button>
-
-<button class="shareimg"
-onclick="shareAsImage()">
-🖼 Share Image
+<button class="download"
+onclick="downloadImage()">
+⬇ Download Image
 </button>
 
 <button class="publish"
-onclick="publishInterview()">
-✅ Publish
-</button>
-
-<button class="sharefb"
-onclick="shareFacebook()">
-📘 Facebook
-</button>
-
-<button class="sharewa"
-onclick="shareWhatsApp()">
-📱 WhatsApp
-</button>
-
-<button class="copybtn"
-onclick="copyText()">
-📋 Copy Text
+onclick="openWhatsApp()">
+📱 Open WhatsApp
 </button>
 
 </div>
 
-</div>
+<!-- Hidden Poster -->
 
-<h2 style="text-align:center;">
-ताज़ा इंटरव्यू
-</h2>
-
-<div id="feed"></div>
-
-</div>
-
-<!-- Hidden Layout -->
-
-<div id="pdfArea" style="display:none;">
+<div id="posterArea" style="display:none;">
 
 <h2>🎤 VARTAALAAP INTERVIEW</h2>
 
-<p id="pdfName"></p>
+<p id="pName"></p>
 
-<img id="pdfPhoto"
-style="width:120px; margin-top:10px;">
+<img id="pPhoto" class="photo">
 
-<p id="pdfContent"
-style="margin-top:20px;"></p>
+<p id="pContent"></p>
+
+</div>
+
+<!-- Preview -->
+
+<div id="previewArea">
+
+<h3>Preview Image</h3>
+
+<img id="previewImage">
+
+<p>
+अब इस image को download करके WhatsApp में भेजें।
+</p>
+
+</div>
 
 </div>
 
 <script>
 
-/* LOAD SAVED */
+/* CREATE PREVIEW */
 
-window.onload=function(){
-
-let saved=
-localStorage.getItem("interviews");
-
-if(saved){
-
-document
-.getElementById("feed")
-.innerHTML=saved;
-
-}
-
-}
-
-/* SPEECH */
-
-function startListening(){
-
-let recognition=
-new webkitSpeechRecognition();
-
-recognition.lang="hi-IN";
-
-recognition.start();
-
-recognition.onresult=function(event){
-
-document
-.getElementById("content")
-.value +=
-event.results[0][0].transcript;
-
-};
-
-}
-
-/* SPEAK */
-
-function speakText(){
-
-let text=
-document.getElementById("content").value;
-
-let speech=
-new SpeechSynthesisUtterance(text);
-
-speech.lang="hi-IN";
-
-window.speechSynthesis.speak(speech);
-
-}
-
-/* PREPARE IMAGE */
-
-function preparePDF(callback){
+function createPreview(){
 
 let name=
 document.getElementById("guestName").value;
@@ -318,15 +204,15 @@ let photoInput=
 document.getElementById("guestPhoto");
 
 document
-.getElementById("pdfName")
+.getElementById("pName")
 .innerText="नाम: "+name;
 
 document
-.getElementById("pdfContent")
+.getElementById("pContent")
 .innerText=content;
 
-let pdfPhoto=
-document.getElementById("pdfPhoto");
+let photo=
+document.getElementById("pPhoto");
 
 if(photoInput.files[0]){
 
@@ -335,9 +221,9 @@ new FileReader();
 
 reader.onload=function(e){
 
-pdfPhoto.src=e.target.result;
+photo.src=e.target.result;
 
-generateCanvas();
+generateImage();
 
 };
 
@@ -345,285 +231,78 @@ reader.readAsDataURL(photoInput.files[0]);
 
 }else{
 
-generateCanvas();
-
-}
-
-function generateCanvas(){
-
-let pdfArea=
-document.getElementById("pdfArea");
-
-pdfArea.style.display="block";
-
-html2canvas(pdfArea).then(canvas=>{
-
-pdfArea.style.display="none";
-
-callback(canvas);
-
-});
+generateImage();
 
 }
 
 }
 
-/* MULTI PAGE PDF */
+/* GENERATE IMAGE */
 
-function savePDF(){
+function generateImage(){
 
-preparePDF(function(canvas){
+let poster=
+document.getElementById("posterArea");
 
-const { jsPDF }=window.jspdf;
+poster.style.display="block";
+
+html2canvas(poster).then(canvas=>{
 
 let imgData=
 canvas.toDataURL("image/png");
 
-let pdf=
-new jsPDF();
-
-let width=210;
-
-let height=
-canvas.height * width /
-canvas.width;
-
-let y=0;
-
-while(height>0){
-
-pdf.addImage(
-imgData,
-"PNG",
-0,
-y,
-width,
-height
-);
-
-height-=297;
-
-if(height>0){
-
-pdf.addPage();
-
-y-=297;
-
-}
-
-}
-
-pdf.save("Interview.pdf");
-
-});
-
-}
-
-/* SHARE IMAGE */
-
-function shareAsImage(){
-
-preparePDF(function(canvas){
-
-let link=document.createElement("a");
-
-link.download="Interview_Image.png";
-
-link.href=canvas.toDataURL();
-
-link.click();
-
-});
-
-}
-
-/* WHATSAPP FIX */
-
-function shareWhatsApp(){
-
-preparePDF(function(canvas){
-
-/* Convert canvas to image */
-
-let imageData =
-canvas.toDataURL("image/png");
-
-/* Force download */
-
-let link =
-document.createElement("a");
-
-link.href = imageData;
-
-link.download =
-"Vartaalaap_Interview.png";
-
-/* Required for some browsers */
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
-
-/* Open WhatsApp after download */
-
-setTimeout(function(){
-
-window.open(
-"https://web.whatsapp.com/",
-"_blank"
-);
-
-alert(
-"Image download हो गई है.\nअब WhatsApp में 📎 (Attach) दबाकर image भेजें."
-);
-
-},2000);
-
-});
-}
-
-preparePDF(function(canvas){
-
-let link=document.createElement("a");
-
-link.download="Vartaalaap_Image.png";
-
-link.href=canvas.toDataURL("image/png");
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
-
-setTimeout(function(){
-
-window.open(
-"https://web.whatsapp.com/",
-"_blank"
-);
-
-alert(
-"Image download हो गई है.\nअब WhatsApp में 📎 Attach करके image भेजें."
-);
-
-},1500);
-
-});
-
-}
-
-/* FACEBOOK */
-
-function shareFacebook(){
-
-window.open(
-"https://www.facebook.com/"
-);
-
-}
-
-/* COPY */
-
-function copyText(){
-
-let name=
-document.getElementById("guestName").value;
-
-let content=
-document.getElementById("content").value;
-
-navigator.clipboard.writeText(
-
-"🎤 Vartaalaap Interview\n\n"
-+ name + "\n\n"
-+ content
-
-);
-
-alert("Text copied");
-
-}
-
-/* PUBLISH */
-
-function publishInterview(){
-
-let name=
-document.getElementById("guestName").value;
-
-let content=
-document.getElementById("content").value;
-
-let photoInput=
-document.getElementById("guestPhoto");
-
-/* DATE */
-
-let now=new Date();
-
-let dateString=
-now.toLocaleString();
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-let box=document.createElement("div");
-
-box.className="interview";
-
-box.innerHTML=`
-
-<button class="delete-btn"
-onclick="deleteInterview(this)">
-Delete
-</button>
-
-<div class="date-text">
-${dateString}
-</div>
-
-<img src="${e.target.result}" class="photo">
-
-<h3>${name}</h3>
-
-<p>${content}</p>
-
-`;
+document
+.getElementById("previewImage")
+.src=imgData;
 
 document
-.getElementById("feed")
-.prepend(box);
+.getElementById("previewArea")
+.style.display="block";
 
-/* SAVE */
+poster.style.display="none";
 
-localStorage.setItem(
-"interviews",
-document.getElementById("feed").innerHTML
+window.generatedImage=imgData;
+
+});
+
+}
+
+/* DOWNLOAD */
+
+function downloadImage(){
+
+if(window.generatedImage){
+
+let link=
+document.createElement("a");
+
+link.href=
+window.generatedImage;
+
+link.download=
+"Vartaalaap_Interview.png";
+
+link.click();
+
+}else{
+
+alert("पहले Image Preview बनाएं");
+
+}
+
+}
+
+/* OPEN WHATSAPP */
+
+function openWhatsApp(){
+
+window.open(
+"https://web.whatsapp.com/",
+"_blank"
 );
 
-};
-
-if(photoInput.files[0]){
-
-reader.readAsDataURL(photoInput.files[0]);
-
-}
-
-}
-
-/* DELETE */
-
-function deleteInterview(btn){
-
-btn.parentElement.remove();
-
-localStorage.setItem(
-"interviews",
-document.getElementById("feed").innerHTML
+alert(
+"अब WhatsApp में 📎 दबाकर downloaded image भेजें."
 );
 
 }
