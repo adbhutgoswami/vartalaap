@@ -8,24 +8,11 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
-<!-- PDF Library -->
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
-:root{
---brand:#e67e22;
---bg:#f4f7f6;
-}
-
-body{
-font-family:Segoe UI, Arial;
-margin:0;
-background:var(--bg);
-}
-
-/* HEADER STYLE LIKE YOUR IMAGE */
+/* HEADER */
 
 .main-header{
 
@@ -37,76 +24,14 @@ background: linear-gradient(
 );
 
 padding:60px 20px;
-
-position:relative;
-
 border-bottom:5px solid #e67e22;
-
-}
-
-/* Decorative circles */
-
-.main-header::before{
-
-content:"";
-
-position:absolute;
-
-width:200px;
-
-height:200px;
-
-background:rgba(255,255,255,0.08);
-
-border-radius:50%;
-
-top:-50px;
-
-left:-50px;
-
-}
-
-.main-header::after{
-
-content:"";
-
-position:absolute;
-
-width:250px;
-
-height:250px;
-
-background:rgba(255,255,255,0.08);
-
-border-radius:50%;
-
-bottom:-80px;
-
-right:-80px;
-
-}
-
-/* Center content */
-
-.header-content{
-
 text-align:center;
-
 }
-
-/* Logo text */
 
 .logo-text{
 
 font-size:48px;
-
 font-weight:bold;
-
-display:inline-flex;
-
-align-items:center;
-
-gap:15px;
 
 background: linear-gradient(
 90deg,
@@ -115,22 +40,15 @@ background: linear-gradient(
 );
 
 -webkit-background-clip:text;
-
 -webkit-text-fill-color:transparent;
 
 }
 
-/* Line beside text */
-
 .logo-line{
 
 display:inline-block;
-
 width:220px;
-
 height:4px;
-
-border-radius:3px;
 
 background: linear-gradient(
 90deg,
@@ -138,23 +56,24 @@ background: linear-gradient(
 #6dd5fa
 );
 
+margin-left:10px;
 }
-
-/* Tagline */
 
 .tagline{
 
 color:#e0e0e0;
-
 font-size:18px;
-
 margin-top:20px;
-
-letter-spacing:1px;
 
 }
 
-/* Container */
+/* BODY */
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f7f6;
+}
 
 .container{
 max-width:850px;
@@ -166,26 +85,29 @@ padding:20px;
 background:white;
 padding:25px;
 border-radius:12px;
-margin-bottom:25px;
 box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 input, textarea{
+
 width:100%;
 padding:12px;
 margin:10px 0;
 border-radius:6px;
 border:1px solid #ccc;
-font-size:16px;
+
 }
 
 .buttons{
+
 display:flex;
-gap:10px;
 flex-wrap:wrap;
+gap:10px;
+
 }
 
 button{
+
 padding:12px;
 border:none;
 border-radius:6px;
@@ -193,30 +115,21 @@ font-weight:bold;
 cursor:pointer;
 flex:1;
 color:white;
+
 }
 
 .listen{ background:#8e44ad; }
 .speak{ background:#27ae60; }
 .savepdf{ background:#2980b9; }
 .publish{ background:#e67e22; }
-.sharefb{ background:#1877f2; }
-.sharewa{ background:#25d366; }
-.copybtn{ background:#34495e; }
-
-.interview{
-border-left:6px solid var(--brand);
-padding:15px;
-margin-top:15px;
-background:#fff;
-border-radius:8px;
-}
 
 .photo{
+
 width:120px;
 height:120px;
 object-fit:cover;
 border-radius:10px;
-margin-bottom:10px;
+
 }
 
 </style>
@@ -226,8 +139,6 @@ margin-bottom:10px;
 <body>
 
 <header class="main-header">
-
-<div class="header-content">
 
 <h1 class="logo-text">
 
@@ -243,8 +154,6 @@ Vartaalaap
 
 </p>
 
-</div>
-
 </header>
 
 <div class="container">
@@ -253,22 +162,15 @@ Vartaalaap
 
 <h2>नया इंटरव्यू दर्ज करें</h2>
 
-<input id="guestName"
-placeholder="नाम (Name)">
+<input id="guestName" placeholder="नाम">
 
-<input id="guestLang"
-placeholder="भाषा (Hindi / English)">
+<input id="guestLang" placeholder="भाषा">
 
-<label>📷 फोटो अपलोड करें</label>
+<input type="file" id="guestPhoto">
 
-<input type="file"
-id="guestPhoto"
-accept="image/*">
-
-<textarea
-id="content"
+<textarea id="content"
 rows="6"
-placeholder="यहाँ इंटरव्यू लिखें या बोलकर लिखें...">
+placeholder="यहाँ इंटरव्यू लिखें">
 </textarea>
 
 <div class="buttons">
@@ -280,7 +182,7 @@ onclick="startListening()">
 
 <button class="speak"
 onclick="speakText()">
-🔊 पढ़कर सुनाएँ
+🔊 पढ़ें
 </button>
 
 <button class="savepdf"
@@ -288,35 +190,9 @@ onclick="savePDF()">
 📄 PDF सेव करें
 </button>
 
-<button class="publish"
-onclick="publishInterview()">
-✅ पब्लिश करें
-</button>
-
-<button class="sharefb"
-onclick="shareFacebook()">
-📘 Facebook शेयर
-</button>
-
-<button class="sharewa"
-onclick="shareWhatsApp()">
-📱 WhatsApp शेयर
-</button>
-
-<button class="copybtn"
-onclick="copyText()">
-📋 Copy Text
-</button>
-
 </div>
 
 </div>
-
-<h2 style="text-align:center;">
-ताज़ा इंटरव्यू
-</h2>
-
-<div id="feed"></div>
 
 </div>
 
@@ -327,7 +203,7 @@ onclick="copyText()">
 function startListening(){
 
 if(!('webkitSpeechRecognition' in window)){
-alert("Speech recognition supported नहीं है");
+alert("Speech not supported");
 return;
 }
 
@@ -340,12 +216,10 @@ recognition.start();
 
 recognition.onresult=function(event){
 
-let speechText =
-event.results[0][0].transcript;
-
 document
 .getElementById("content")
-.value += speechText + " ";
+.value +=
+event.results[0][0].transcript;
 
 };
 
@@ -358,11 +232,6 @@ function speakText(){
 let text =
 document.getElementById("content").value;
 
-if(text.trim()==""){
-alert("पहले टेक्स्ट लिखें");
-return;
-}
-
 let speech =
 new SpeechSynthesisUtterance(text);
 
@@ -372,175 +241,83 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* SAVE PDF WITH PHOTO */
+/* HINDI FONT PDF */
 
-function savePDF(){
+async function savePDF(){
 
 const { jsPDF } = window.jspdf;
 
 let name =
-document.getElementById("guestName").value || "Interview";
-
-let lang =
-document.getElementById("guestLang").value || "";
+document.getElementById("guestName").value;
 
 let content =
-document.getElementById("content").value || "";
+document.getElementById("content").value;
 
-let photoInput =
-document.getElementById("guestPhoto");
+let doc =
+new jsPDF();
 
-let doc = new jsPDF();
+/* LOAD FONT */
 
-doc.setFontSize(16);
-doc.text("VARTAALAAP INTERVIEW",10,15);
+let font =
+await fetch(
+"NotoSansDevanagari-Regular.ttf"
+)
+.then(res=>res.arrayBuffer());
 
-doc.setFontSize(12);
-doc.text("Name: " + name,10,30);
-doc.text("Language: " + lang,10,40);
-
-if(photoInput.files[0]){
-
-let reader = new FileReader();
-
-reader.onload = function(e){
-
-doc.addImage(
-e.target.result,
-"JPEG",
-140,
-20,
-40,
-40
+doc.addFileToVFS(
+"NotoSans.ttf",
+font
 );
 
-addText();
+doc.addFont(
+"NotoSans.ttf",
+"NotoSans",
+"normal"
+);
 
-};
+doc.setFont(
+"NotoSans"
+);
 
-reader.readAsDataURL(photoInput.files[0]);
+/* TITLE */
 
-}else{
+doc.setFontSize(16);
 
-addText();
+doc.text(
+"VARTAALAAP INTERVIEW",
+10,
+15
+);
 
-}
+/* NAME */
 
-function addText(){
+doc.setFontSize(12);
+
+doc.text(
+"नाम: "+name,
+10,
+30
+);
+
+/* CONTENT */
 
 let lines =
-doc.splitTextToSize(content,180);
+doc.splitTextToSize(
+content,
+180
+);
 
-doc.text(lines,10,60);
+doc.text(
+lines,
+10,
+50
+);
 
-doc.save("Interview_"+name+".pdf");
+/* SAVE */
 
-}
-
-}
-
-/* PUBLISH */
-
-function publishInterview(){
-
-let name =
-document.getElementById("guestName").value;
-
-let content =
-document.getElementById("content").value;
-
-let photoInput =
-document.getElementById("guestPhoto");
-
-if(name=="" || content==""){
-alert("पूरा इंटरव्यू भरें");
-return;
-}
-
-let reader =
-new FileReader();
-
-reader.onload=function(e){
-
-let box =
-document.createElement("div");
-
-box.className="interview";
-
-box.innerHTML=`
-
-<img src="${e.target.result}" class="photo">
-
-<h3>${name}</h3>
-
-<p>${content}</p>
-
-`;
-
-document
-.getElementById("feed")
-.prepend(box);
-
-};
-
-if(photoInput.files[0]){
-
-reader.readAsDataURL(photoInput.files[0]);
-
-}
-
-}
-
-/* SHARE */
-
-function getShareText(){
-
-let name =
-document.getElementById("guestName").value;
-
-let content =
-document.getElementById("content").value;
-
-return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
-+ name + "\n\n"
-+ content;
-
-}
-
-function shareFacebook(){
-
-let text =
-getShareText();
-
-let url =
-"https://www.facebook.com/sharer/sharer.php?quote="
-+ encodeURIComponent(text);
-
-window.open(url,"_blank");
-
-}
-
-function shareWhatsApp(){
-
-let text =
-getShareText();
-
-let url =
-"https://wa.me/?text="
-+ encodeURIComponent(text);
-
-window.open(url,"_blank");
-
-}
-
-function copyText(){
-
-let text =
-getShareText();
-
-navigator.clipboard.writeText(text);
-
-alert("Text copy हो गया");
+doc.save(
+"Interview_"+name+".pdf"
+);
 
 }
 
