@@ -8,31 +8,37 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
-<!-- jsPDF -->
+<!-- Libraries -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<!-- Hindi Font File -->
-<script src="NotoSansDevanagari-Regular-normal.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 
 /* HEADER */
 
 .main-header{
+
 background: linear-gradient(
 135deg,
 #0f2027,
 #203a43,
 #2c5364
 );
+
 padding:60px 20px;
+
 border-bottom:5px solid #e67e22;
+
 text-align:center;
+
 }
 
 .logo-text{
+
 font-size:48px;
+
 font-weight:bold;
 
 background: linear-gradient(
@@ -43,10 +49,13 @@ background: linear-gradient(
 
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
+
 }
 
 .logo-line{
+
 display:inline-block;
+
 width:220px;
 height:4px;
 
@@ -55,12 +64,15 @@ background: linear-gradient(
 #ff7e5f,
 #6dd5fa
 );
+
 }
 
 .tagline{
+
 color:#e0e0e0;
 font-size:18px;
 margin-top:20px;
+
 }
 
 /* BODY */
@@ -85,20 +97,25 @@ box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 input, textarea{
+
 width:100%;
 padding:12px;
 margin:10px 0;
 border-radius:6px;
 border:1px solid #ccc;
+
 }
 
 .buttons{
+
 display:flex;
 flex-wrap:wrap;
 gap:10px;
+
 }
 
 button{
+
 padding:12px;
 border:none;
 border-radius:6px;
@@ -106,6 +123,7 @@ font-weight:bold;
 cursor:pointer;
 flex:1;
 color:white;
+
 }
 
 .listen{ background:#8e44ad; }
@@ -117,18 +135,32 @@ color:white;
 .copybtn{ background:#34495e; }
 
 .photo{
+
 width:120px;
 height:120px;
 object-fit:cover;
 border-radius:10px;
+
 }
 
 .interview{
+
 border-left:6px solid #e67e22;
 padding:15px;
 margin-top:15px;
 background:#fff;
 border-radius:8px;
+
+}
+
+/* PDF AREA */
+
+#pdfArea{
+
+width:210mm;
+padding:20px;
+background:white;
+
 }
 
 </style>
@@ -221,6 +253,22 @@ onclick="copyText()">
 
 </div>
 
+<!-- Hidden PDF Layout -->
+
+<div id="pdfArea" style="display:none;">
+
+<h2>🎤 VARTAALAAP INTERVIEW</h2>
+
+<p id="pdfName"></p>
+
+<img id="pdfPhoto"
+style="width:120px; margin-top:10px;">
+
+<p id="pdfContent"
+style="margin-top:20px;"></p>
+
+</div>
+
 <script>
 
 /* SPEECH */
@@ -266,11 +314,9 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* HINDI PDF */
+/* PDF USING IMAGE METHOD */
 
 function savePDF(){
-
-const { jsPDF } = window.jspdf;
 
 let name =
 document.getElementById("guestName").value;
@@ -281,34 +327,16 @@ document.getElementById("content").value;
 let photoInput =
 document.getElementById("guestPhoto");
 
-let doc =
-new jsPDF();
+/* Fill PDF Area */
 
-/* Use Hindi Font */
+document.getElementById("pdfName")
+.innerText="नाम: "+name;
 
-doc.setFont("NotoSansDevanagari");
+document.getElementById("pdfContent")
+.innerText=content;
 
-/* TITLE */
-
-doc.setFontSize(16);
-
-doc.text(
-"VARTAALAAP INTERVIEW",
-10,
-15
-);
-
-/* NAME */
-
-doc.setFontSize(12);
-
-doc.text(
-"नाम: "+name,
-10,
-30
-);
-
-/* PHOTO */
+let pdfPhoto =
+document.getElementById("pdfPhoto");
 
 if(photoInput.files[0]){
 
@@ -317,16 +345,9 @@ new FileReader();
 
 reader.onload=function(e){
 
-doc.addImage(
-e.target.result,
-"JPEG",
-140,
-20,
-40,
-40
-);
+pdfPhoto.src=e.target.result;
 
-addText();
+generatePDF();
 
 };
 
@@ -334,33 +355,49 @@ reader.readAsDataURL(photoInput.files[0]);
 
 }else{
 
-addText();
-
-}
-
-function addText(){
-
-let lines =
-doc.splitTextToSize(
-content,
-180
-);
-
-doc.text(
-lines,
-10,
-60
-);
-
-doc.save(
-"Interview_"+name+".pdf"
-);
+generatePDF();
 
 }
 
 }
 
-/* SHARE */
+/* Create PDF */
+
+function generatePDF(){
+
+let pdfArea =
+document.getElementById("pdfArea");
+
+pdfArea.style.display="block";
+
+html2canvas(pdfArea).then(canvas=>{
+
+const { jsPDF } = window.jspdf;
+
+let imgData =
+canvas.toDataURL("image/png");
+
+let pdf =
+new jsPDF();
+
+pdf.addImage(
+imgData,
+"PNG",
+0,
+0,
+210,
+0
+);
+
+pdf.save("Interview.pdf");
+
+pdfArea.style.display="none";
+
+});
+
+}
+
+/* PUBLISH */
 
 function publishInterview(){
 
@@ -407,6 +444,8 @@ reader.readAsDataURL(photoInput.files[0]);
 
 }
 
+/* SHARE */
+
 function getShareText(){
 
 let name =
@@ -423,21 +462,19 @@ return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
 
 function shareFacebook(){
 
-let url =
+window.open(
 "https://www.facebook.com/sharer/sharer.php?quote="
-+ encodeURIComponent(getShareText());
-
-window.open(url,"_blank");
++ encodeURIComponent(getShareText())
+);
 
 }
 
 function shareWhatsApp(){
 
-let url =
+window.open(
 "https://wa.me/?text="
-+ encodeURIComponent(getShareText());
-
-window.open(url,"_blank");
++ encodeURIComponent(getShareText())
+);
 
 }
 
