@@ -443,6 +443,49 @@ function shareWhatsApp(){
 
 preparePDF(function(canvas){
 
+/* Convert canvas to image */
+
+let imageData =
+canvas.toDataURL("image/png");
+
+/* Force download */
+
+let link =
+document.createElement("a");
+
+link.href = imageData;
+
+link.download =
+"Vartaalaap_Interview.png";
+
+/* Required for some browsers */
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
+
+/* Open WhatsApp after download */
+
+setTimeout(function(){
+
+window.open(
+"https://web.whatsapp.com/",
+"_blank"
+);
+
+alert(
+"Image download हो गई है.\nअब WhatsApp में 📎 (Attach) दबाकर image भेजें."
+);
+
+},2000);
+
+});
+}
+
+preparePDF(function(canvas){
+
 let link=document.createElement("a");
 
 link.download="Vartaalaap_Image.png";
