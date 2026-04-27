@@ -8,6 +8,8 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
+<!-- PDF Library -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -23,39 +25,136 @@ margin:0;
 background:var(--bg);
 }
 
-/* HEADER */
+/* HEADER STYLE LIKE YOUR IMAGE */
 
-header{
-background:white;
-padding:25px;
-text-align:center;
-border-bottom:5px solid var(--brand);
-}
-
-/* COLORFUL TITLE */
-
-.colorful{
-font-size:44px;
-font-weight:bold;
+.main-header{
 
 background: linear-gradient(
-45deg,
-#e67e22,
-#e74c3c,
-#8e44ad,
-#2980b9
+135deg,
+#0f2027,
+#203a43,
+#2c5364
+);
+
+padding:60px 20px;
+
+position:relative;
+
+border-bottom:5px solid #e67e22;
+
+}
+
+/* Decorative circles */
+
+.main-header::before{
+
+content:"";
+
+position:absolute;
+
+width:200px;
+
+height:200px;
+
+background:rgba(255,255,255,0.08);
+
+border-radius:50%;
+
+top:-50px;
+
+left:-50px;
+
+}
+
+.main-header::after{
+
+content:"";
+
+position:absolute;
+
+width:250px;
+
+height:250px;
+
+background:rgba(255,255,255,0.08);
+
+border-radius:50%;
+
+bottom:-80px;
+
+right:-80px;
+
+}
+
+/* Center content */
+
+.header-content{
+
+text-align:center;
+
+}
+
+/* Logo text */
+
+.logo-text{
+
+font-size:48px;
+
+font-weight:bold;
+
+display:inline-flex;
+
+align-items:center;
+
+gap:15px;
+
+background: linear-gradient(
+90deg,
+#ff7e5f,
+#feb47b
 );
 
 -webkit-background-clip:text;
+
 -webkit-text-fill-color:transparent;
+
 }
 
-.tagline{
-font-size:16px;
-color:#555;
-font-weight:bold;
-margin-top:8px;
+/* Line beside text */
+
+.logo-line{
+
+display:inline-block;
+
+width:220px;
+
+height:4px;
+
+border-radius:3px;
+
+background: linear-gradient(
+90deg,
+#ff7e5f,
+#6dd5fa
+);
+
 }
+
+/* Tagline */
+
+.tagline{
+
+color:#e0e0e0;
+
+font-size:18px;
+
+margin-top:20px;
+
+letter-spacing:1px;
+
+}
+
+/* Container */
 
 .container{
 max-width:850px;
@@ -126,15 +225,25 @@ margin-bottom:10px;
 
 <body>
 
-<header>
+<header class="main-header">
 
-<h1 class="colorful">
-🎤 Vartaalaap
+<div class="header-content">
+
+<h1 class="logo-text">
+
+Vartaalaap
+
+<span class="logo-line"></span>
+
 </h1>
 
 <p class="tagline">
-हर भाषा, हर कहानी, एक मंच
+
+✦ हर भाषा, हर कहानी, एक मंच ✦
+
 </p>
+
+</div>
 
 </header>
 
@@ -283,33 +392,12 @@ document.getElementById("guestPhoto");
 
 let doc = new jsPDF();
 
-/* TITLE */
-
 doc.setFontSize(16);
-
-doc.text(
-"VARTAALAAP INTERVIEW",
-10,
-15
-);
-
-/* NAME */
+doc.text("VARTAALAAP INTERVIEW",10,15);
 
 doc.setFontSize(12);
-
-doc.text(
-"Name: " + name,
-10,
-30
-);
-
-doc.text(
-"Language: " + lang,
-10,
-40
-);
-
-/* ADD PHOTO */
+doc.text("Name: " + name,10,30);
+doc.text("Language: " + lang,10,40);
 
 if(photoInput.files[0]){
 
@@ -330,9 +418,7 @@ addText();
 
 };
 
-reader.readAsDataURL(
-photoInput.files[0]
-);
+reader.readAsDataURL(photoInput.files[0]);
 
 }else{
 
@@ -340,25 +426,14 @@ addText();
 
 }
 
-/* ADD TEXT */
-
 function addText(){
 
 let lines =
-doc.splitTextToSize(
-content,
-180
-);
+doc.splitTextToSize(content,180);
 
-doc.text(
-lines,
-10,
-60
-);
+doc.text(lines,10,60);
 
-doc.save(
-"Interview_" + name + ".pdf"
-);
+doc.save("Interview_"+name+".pdf");
 
 }
 
@@ -410,9 +485,7 @@ document
 
 if(photoInput.files[0]){
 
-reader.readAsDataURL(
-photoInput.files[0]
-);
+reader.readAsDataURL(photoInput.files[0]);
 
 }
 
