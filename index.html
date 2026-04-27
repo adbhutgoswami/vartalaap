@@ -154,7 +154,7 @@ border-radius:8px;
 
 }
 
-/* PDF + IMAGE AREA */
+/* PDF Layout */
 
 #pdfArea{
 
@@ -277,7 +277,7 @@ style="margin-top:20px;"></p>
 
 <script>
 
-/* AUTO SAVE LOAD */
+/* AUTO LOAD */
 
 window.onload=function(){
 
@@ -328,80 +328,7 @@ new SpeechSynthesisUtterance(text);
 
 speech.lang="hi-IN";
 
-speech.rate=0.9;
-
 window.speechSynthesis.speak(speech);
-
-}
-
-/* MULTI PAGE PDF */
-
-function savePDF(){
-
-preparePDF(function(canvas){
-
-const { jsPDF }=window.jspdf;
-
-let imgData=
-canvas.toDataURL("image/png");
-
-let pdf=
-new jsPDF();
-
-let width=210;
-
-let height=
-canvas.height * width /
-canvas.width;
-
-let y=0;
-
-while(height>0){
-
-pdf.addImage(
-imgData,
-"PNG",
-0,
-y,
-width,
-height
-);
-
-height-=297;
-
-if(height>0){
-
-pdf.addPage();
-
-y-=297;
-
-}
-
-}
-
-pdf.save("Interview.pdf");
-
-});
-
-}
-
-/* SHARE IMAGE */
-
-function shareAsImage(){
-
-preparePDF(function(canvas){
-
-let link=
-document.createElement("a");
-
-link.download="Interview_Image.png";
-
-link.href=
-canvas.toDataURL();
-
-link.click();
-
-});
 
 }
 
@@ -469,7 +396,140 @@ callback(canvas);
 
 }
 
-/* PUBLISH + AUTO SAVE */
+/* MULTI PAGE PDF */
+
+function savePDF(){
+
+preparePDF(function(canvas){
+
+const { jsPDF }=window.jspdf;
+
+let imgData=
+canvas.toDataURL("image/png");
+
+let pdf=
+new jsPDF();
+
+let width=210;
+
+let height=
+canvas.height * width /
+canvas.width;
+
+let y=0;
+
+while(height>0){
+
+pdf.addImage(
+imgData,
+"PNG",
+0,
+y,
+width,
+height
+);
+
+height-=297;
+
+if(height>0){
+
+pdf.addPage();
+
+y-=297;
+
+}
+
+}
+
+pdf.save("Interview.pdf");
+
+});
+
+}
+
+/* SHARE IMAGE */
+
+function shareAsImage(){
+
+preparePDF(function(canvas){
+
+let link=
+document.createElement("a");
+
+link.download="Interview_Image.png";
+
+link.href=canvas.toDataURL();
+
+link.click();
+
+});
+
+}
+
+/* WHATSAPP IMAGE SHARE */
+
+function shareWhatsApp(){
+
+preparePDF(function(canvas){
+
+let link=
+document.createElement("a");
+
+link.download="Interview_Image.png";
+
+link.href=canvas.toDataURL();
+
+link.click();
+
+setTimeout(function(){
+
+window.open(
+"https://wa.me/?text="
++ encodeURIComponent(
+"📢 Vartaalaap Interview — Image attached"
+)
+
+);
+
+},1000);
+
+});
+
+}
+
+/* FACEBOOK */
+
+function shareFacebook(){
+
+window.open(
+"https://www.facebook.com/sharer/sharer.php"
+);
+
+}
+
+/* COPY */
+
+function copyText(){
+
+let name=
+document.getElementById("guestName").value;
+
+let content=
+document.getElementById("content").value;
+
+navigator.clipboard.writeText(
+
+"🎤 Vartaalaap Interview\n\n"
++ name + "\n\n"
++ content
+
+);
+
+alert("Text copied");
+
+}
+
+/* PUBLISH */
 
 function publishInterview(){
 
@@ -520,50 +580,6 @@ if(photoInput.files[0]){
 reader.readAsDataURL(photoInput.files[0]);
 
 }
-
-}
-
-/* SHARE */
-
-function getShareText(){
-
-let name=
-document.getElementById("guestName").value;
-
-let content=
-document.getElementById("content").value;
-
-return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
-+ name + "\n\n"
-+ content;
-
-}
-
-function shareFacebook(){
-
-window.open(
-"https://www.facebook.com/sharer/sharer.php?quote="
-+ encodeURIComponent(getShareText())
-);
-
-}
-
-function shareWhatsApp(){
-
-window.open(
-"https://wa.me/?text="
-+ encodeURIComponent(getShareText())
-);
-
-}
-
-function copyText(){
-
-navigator.clipboard.writeText(
-getShareText()
-);
-
-alert("Text copy हो गया");
 
 }
 
