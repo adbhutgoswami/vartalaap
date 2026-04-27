@@ -8,40 +8,32 @@
 
 <title>Vartaalaap | इंटरव्यू मंच</title>
 
+<!-- jsPDF -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Hindi Font File -->
+<script src="NotoSansDevanagari-Regular-normal.js"></script>
 
 <style>
 
 /* HEADER */
 
 .main-header{
-
 background: linear-gradient(
 135deg,
 #0f2027,
 #203a43,
 #2c5364
 );
-
 padding:60px 20px;
-
 border-bottom:5px solid #e67e22;
-
 text-align:center;
-
 }
 
 .logo-text{
-
 font-size:48px;
-
 font-weight:bold;
-
-display:inline-flex;
-
-align-items:center;
-
-gap:15px;
 
 background: linear-gradient(
 90deg,
@@ -50,13 +42,11 @@ background: linear-gradient(
 );
 
 -webkit-background-clip:text;
-
 -webkit-text-fill-color:transparent;
-
 }
 
 .logo-line{
-
+display:inline-block;
 width:220px;
 height:4px;
 
@@ -65,87 +55,57 @@ background: linear-gradient(
 #ff7e5f,
 #6dd5fa
 );
-
 }
 
 .tagline{
-
 color:#e0e0e0;
 font-size:18px;
 margin-top:20px;
-
 }
 
 /* BODY */
 
 body{
-
 font-family:Arial;
-
 margin:0;
-
 background:#f4f7f6;
-
 }
 
 .container{
-
 max-width:850px;
 margin:auto;
 padding:20px;
-
 }
 
 .card{
-
 background:white;
-
 padding:25px;
-
 border-radius:12px;
-
 box-shadow:0 5px 15px rgba(0,0,0,0.1);
-
 }
 
 input, textarea{
-
 width:100%;
-
 padding:12px;
-
 margin:10px 0;
-
 border-radius:6px;
-
 border:1px solid #ccc;
-
 }
 
 .buttons{
-
 display:flex;
 flex-wrap:wrap;
 gap:10px;
-
 }
 
 button{
-
 padding:12px;
-
 border:none;
-
 border-radius:6px;
-
 font-weight:bold;
-
 cursor:pointer;
-
 flex:1;
-
 color:white;
-
 }
 
 .listen{ background:#8e44ad; }
@@ -156,29 +116,19 @@ color:white;
 .sharewa{ background:#25d366; }
 .copybtn{ background:#34495e; }
 
-.interview{
-
-border-left:6px solid #e67e22;
-
-padding:15px;
-
-margin-top:15px;
-
-background:#fff;
-
-border-radius:8px;
-
-}
-
 .photo{
-
 width:120px;
 height:120px;
-
 object-fit:cover;
-
 border-radius:10px;
+}
 
+.interview{
+border-left:6px solid #e67e22;
+padding:15px;
+margin-top:15px;
+background:#fff;
+border-radius:8px;
 }
 
 </style>
@@ -316,23 +266,27 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* SAFE WORKING PDF */
+/* HINDI PDF */
 
 function savePDF(){
 
 const { jsPDF } = window.jspdf;
 
 let name =
-document.getElementById("guestName").value || "";
+document.getElementById("guestName").value;
 
 let content =
-document.getElementById("content").value || "";
+document.getElementById("content").value;
 
 let photoInput =
 document.getElementById("guestPhoto");
 
 let doc =
 new jsPDF();
+
+/* Use Hindi Font */
+
+doc.setFont("NotoSansDevanagari");
 
 /* TITLE */
 
@@ -406,7 +360,7 @@ doc.save(
 
 }
 
-/* PUBLISH */
+/* SHARE */
 
 function publishInterview(){
 
@@ -418,11 +372,6 @@ document.getElementById("content").value;
 
 let photoInput =
 document.getElementById("guestPhoto");
-
-if(name=="" || content==""){
-alert("पूरा इंटरव्यू भरें");
-return;
-}
 
 let reader =
 new FileReader();
@@ -458,8 +407,6 @@ reader.readAsDataURL(photoInput.files[0]);
 
 }
 
-/* SHARE */
-
 function getShareText(){
 
 let name =
@@ -476,12 +423,9 @@ return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
 
 function shareFacebook(){
 
-let text =
-getShareText();
-
 let url =
 "https://www.facebook.com/sharer/sharer.php?quote="
-+ encodeURIComponent(text);
++ encodeURIComponent(getShareText());
 
 window.open(url,"_blank");
 
@@ -489,12 +433,9 @@ window.open(url,"_blank");
 
 function shareWhatsApp(){
 
-let text =
-getShareText();
-
 let url =
 "https://wa.me/?text="
-+ encodeURIComponent(text);
++ encodeURIComponent(getShareText());
 
 window.open(url,"_blank");
 
@@ -502,10 +443,9 @@ window.open(url,"_blank");
 
 function copyText(){
 
-let text =
-getShareText();
-
-navigator.clipboard.writeText(text);
+navigator.clipboard.writeText(
+getShareText()
+);
 
 alert("Text copy हो गया");
 
