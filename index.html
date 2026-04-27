@@ -167,7 +167,133 @@ onclick="speakText()">
 </button>
 
 <button class="savepdf"
-onclick="savePDF()">
+onclick="function savePDF(){
+
+const { jsPDF } = window.jspdf;
+
+let name =
+document.getElementById("guestName").value;
+
+let lang =
+document.getElementById("guestLang").value;
+
+let content =
+document.getElementById("content").value;
+
+/* CREATE PDF */
+
+let doc = new jsPDF();
+
+/* TRY ADD LOGO */
+
+let img = new Image();
+
+img.src = "logo.png";
+
+/* IF LOGO LOADS */
+
+img.onload = function(){
+
+createPDF(true);
+
+};
+
+/* IF LOGO FAILS */
+
+img.onerror = function(){
+
+createPDF(false);
+
+};
+
+function createPDF(hasLogo){
+
+if(hasLogo){
+
+doc.addImage(
+img,
+"PNG",
+10,
+5,
+40,
+20
+);
+
+doc.setFontSize(16);
+
+doc.text(
+"VARTAALAAP INTERVIEW",
+10,
+35
+);
+
+doc.setFontSize(12);
+
+doc.text(
+"Name: "+name,
+10,
+50
+);
+
+doc.text(
+"Language: "+lang,
+10,
+60
+);
+
+var yPos = 75;
+
+}else{
+
+doc.setFontSize(16);
+
+doc.text(
+"VARTAALAAP INTERVIEW",
+10,
+15
+);
+
+doc.setFontSize(12);
+
+doc.text(
+"Name: "+name,
+10,
+30
+);
+
+doc.text(
+"Language: "+lang,
+10,
+40
+);
+
+var yPos = 55;
+
+}
+
+/* ADD TEXT */
+
+let lines =
+doc.splitTextToSize(
+content,
+180
+);
+
+doc.text(
+lines,
+10,
+yPos
+);
+
+/* SAVE */
+
+doc.save(
+"Interview_"+name+".pdf"
+);
+
+}
+
+}()">
 📄 PDF सेव करें
 </button>
 
