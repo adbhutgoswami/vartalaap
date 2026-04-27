@@ -461,10 +461,44 @@ alert("Download image करके WhatsApp में भेजें");
 
 function openFacebook(){
 
-window.open("https://facebook.com");
+if(!window.generatedImage){
+
+alert("पहले Preview बनाएं");
+
+return;
 
 }
 
+/* Download Image First */
+
+let link=document.createElement("a");
+
+link.href=window.generatedImage;
+
+link.download="Vartaalaap_Facebook_Image.png";
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
+
+/* Open Facebook */
+
+setTimeout(function(){
+
+window.open(
+"https://www.facebook.com/",
+"_blank"
+);
+
+alert(
+"Image download हो गई है.\nअब Facebook में Photo upload करके post करें."
+);
+
+},1500);
+
+}
 /* COPY */
 
 function copyText(){
