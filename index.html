@@ -133,6 +133,7 @@ color:white;
 .sharefb{ background:#1877f2; }
 .sharewa{ background:#25d366; }
 .copybtn{ background:#34495e; }
+.shareimg{ background:#9b59b6; }
 
 .photo{
 
@@ -153,7 +154,7 @@ border-radius:8px;
 
 }
 
-/* PDF LAYOUT */
+/* PDF + IMAGE AREA */
 
 #pdfArea{
 
@@ -218,7 +219,12 @@ onclick="speakText()">
 
 <button class="savepdf"
 onclick="savePDF()">
-📄 PDF सेव करें
+📄 Multi-Page PDF
+</button>
+
+<button class="shareimg"
+onclick="shareAsImage()">
+🖼 Share as Image
 </button>
 
 <button class="publish"
@@ -253,7 +259,7 @@ onclick="copyText()">
 
 </div>
 
-<!-- Hidden PDF Content -->
+<!-- Hidden Layout -->
 
 <div id="pdfArea" style="display:none;">
 
@@ -271,16 +277,28 @@ style="margin-top:20px;"></p>
 
 <script>
 
+/* AUTO SAVE LOAD */
+
+window.onload=function(){
+
+let saved=
+localStorage.getItem("interviews");
+
+if(saved){
+
+document
+.getElementById("feed")
+.innerHTML=saved;
+
+}
+
+}
+
 /* SPEECH */
 
 function startListening(){
 
-if(!('webkitSpeechRecognition' in window)){
-alert("Speech not supported");
-return;
-}
-
-let recognition =
+let recognition=
 new webkitSpeechRecognition();
 
 recognition.lang="hi-IN";
@@ -302,50 +320,125 @@ event.results[0][0].transcript;
 
 function speakText(){
 
-let text =
+let text=
 document.getElementById("content").value;
 
-let speech =
+let speech=
 new SpeechSynthesisUtterance(text);
 
 speech.lang="hi-IN";
+
+speech.rate=0.9;
 
 window.speechSynthesis.speak(speech);
 
 }
 
-/* PDF — IMAGE METHOD */
+/* MULTI PAGE PDF */
 
 function savePDF(){
 
-let name =
+preparePDF(function(canvas){
+
+const { jsPDF }=window.jspdf;
+
+let imgData=
+canvas.toDataURL("image/png");
+
+let pdf=
+new jsPDF();
+
+let width=210;
+
+let height=
+canvas.height * width /
+canvas.width;
+
+let y=0;
+
+while(height>0){
+
+pdf.addImage(
+imgData,
+"PNG",
+0,
+y,
+width,
+height
+);
+
+height-=297;
+
+if(height>0){
+
+pdf.addPage();
+
+y-=297;
+
+}
+
+}
+
+pdf.save("Interview.pdf");
+
+});
+
+}
+
+/* SHARE IMAGE */
+
+function shareAsImage(){
+
+preparePDF(function(canvas){
+
+let link=
+document.createElement("a");
+
+link.download="Interview_Image.png";
+
+link.href=
+canvas.toDataURL();
+
+link.click();
+
+});
+
+}
+
+/* PREPARE LAYOUT */
+
+function preparePDF(callback){
+
+let name=
 document.getElementById("guestName").value;
 
-let content =
+let content=
 document.getElementById("content").value;
 
-let photoInput =
+let photoInput=
 document.getElementById("guestPhoto");
 
-document.getElementById("pdfName")
+document
+.getElementById("pdfName")
 .innerText="नाम: "+name;
 
-document.getElementById("pdfContent")
+document
+.getElementById("pdfContent")
 .innerText=content;
 
-let pdfPhoto =
+let pdfPhoto=
 document.getElementById("pdfPhoto");
 
 if(photoInput.files[0]){
 
-let reader =
+let reader=
 new FileReader();
 
 reader.onload=function(e){
 
 pdfPhoto.src=e.target.result;
 
-generatePDF();
+generateCanvas();
 
 };
 
@@ -353,67 +446,48 @@ reader.readAsDataURL(photoInput.files[0]);
 
 }else{
 
-generatePDF();
+generateCanvas();
 
 }
 
-}
+function generateCanvas(){
 
-function generatePDF(){
-
-let pdfArea =
+let pdfArea=
 document.getElementById("pdfArea");
 
 pdfArea.style.display="block";
 
 html2canvas(pdfArea).then(canvas=>{
 
-const { jsPDF } = window.jspdf;
-
-let imgData =
-canvas.toDataURL("image/png");
-
-let pdf =
-new jsPDF();
-
-pdf.addImage(
-imgData,
-"PNG",
-0,
-0,
-210,
-0
-);
-
-pdf.save("Interview.pdf");
-
 pdfArea.style.display="none";
+
+callback(canvas);
 
 });
 
 }
 
-/* PUBLISH */
+}
+
+/* PUBLISH + AUTO SAVE */
 
 function publishInterview(){
 
-let name =
+let name=
 document.getElementById("guestName").value;
 
-let content =
+let content=
 document.getElementById("content").value;
 
-let photoInput =
+let photoInput=
 document.getElementById("guestPhoto");
 
-if(photoInput.files[0]){
-
-let reader =
+let reader=
 new FileReader();
 
 reader.onload=function(e){
 
-let box =
+let box=
 document.createElement("div");
 
 box.className="interview";
@@ -432,7 +506,16 @@ document
 .getElementById("feed")
 .prepend(box);
 
+/* AUTO SAVE */
+
+localStorage.setItem(
+"interviews",
+document.getElementById("feed").innerHTML
+);
+
 };
+
+if(photoInput.files[0]){
 
 reader.readAsDataURL(photoInput.files[0]);
 
@@ -444,10 +527,10 @@ reader.readAsDataURL(photoInput.files[0]);
 
 function getShareText(){
 
-let name =
+let name=
 document.getElementById("guestName").value;
 
-let content =
+let content=
 document.getElementById("content").value;
 
 return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
