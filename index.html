@@ -14,7 +14,6 @@
 
 :root{
 --brand:#e67e22;
---dark:#2c3e50;
 --bg:#f4f7f6;
 }
 
@@ -24,6 +23,8 @@ margin:0;
 background:var(--bg);
 }
 
+/* HEADER */
+
 header{
 background:white;
 padding:25px;
@@ -31,13 +32,29 @@ text-align:center;
 border-bottom:5px solid var(--brand);
 }
 
-.logo{
-font-size:40px;
+/* COLORFUL TITLE */
+
+.colorful{
+font-size:44px;
 font-weight:bold;
+
+background: linear-gradient(
+45deg,
+#e67e22,
+#e74c3c,
+#8e44ad,
+#2980b9
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-.logo span{
-color:var(--brand);
+.tagline{
+font-size:16px;
+color:#555;
+font-weight:bold;
+margin-top:8px;
 }
 
 .container{
@@ -79,10 +96,10 @@ flex:1;
 color:white;
 }
 
-.publish{ background:var(--brand); }
-.speak{ background:#27ae60; }
 .listen{ background:#8e44ad; }
+.speak{ background:#27ae60; }
 .savepdf{ background:#2980b9; }
+.publish{ background:#e67e22; }
 .sharefb{ background:#1877f2; }
 .sharewa{ background:#25d366; }
 .copybtn{ background:#34495e; }
@@ -95,21 +112,12 @@ background:#fff;
 border-radius:8px;
 }
 
-.lang{
-font-size:12px;
-background:#ffe6d1;
-padding:3px 8px;
-border-radius:4px;
-font-weight:bold;
-}
-
 .photo{
 width:120px;
 height:120px;
 object-fit:cover;
 border-radius:10px;
 margin-bottom:10px;
-border:2px solid #ddd;
 }
 
 </style>
@@ -120,13 +128,13 @@ border:2px solid #ddd;
 
 <header>
 
-<img src="logo.png" width="120">
-
-<h1 class="logo">
-Varta<span>alaap</span>
+<h1 class="colorful">
+🎤 Vartaalaap
 </h1>
 
-<p>हर भाषा, हर कहानी, एक मंच</p>
+<p class="tagline">
+हर भाषा, हर कहानी, एक मंच
+</p>
 
 </header>
 
@@ -167,133 +175,7 @@ onclick="speakText()">
 </button>
 
 <button class="savepdf"
-onclick="function savePDF(){
-
-const { jsPDF } = window.jspdf;
-
-let name =
-document.getElementById("guestName").value;
-
-let lang =
-document.getElementById("guestLang").value;
-
-let content =
-document.getElementById("content").value;
-
-/* CREATE PDF */
-
-let doc = new jsPDF();
-
-/* TRY ADD LOGO */
-
-let img = new Image();
-
-img.src = "logo.png";
-
-/* IF LOGO LOADS */
-
-img.onload = function(){
-
-createPDF(true);
-
-};
-
-/* IF LOGO FAILS */
-
-img.onerror = function(){
-
-createPDF(false);
-
-};
-
-function createPDF(hasLogo){
-
-if(hasLogo){
-
-doc.addImage(
-img,
-"PNG",
-10,
-5,
-40,
-20
-);
-
-doc.setFontSize(16);
-
-doc.text(
-"VARTAALAAP INTERVIEW",
-10,
-35
-);
-
-doc.setFontSize(12);
-
-doc.text(
-"Name: "+name,
-10,
-50
-);
-
-doc.text(
-"Language: "+lang,
-10,
-60
-);
-
-var yPos = 75;
-
-}else{
-
-doc.setFontSize(16);
-
-doc.text(
-"VARTAALAAP INTERVIEW",
-10,
-15
-);
-
-doc.setFontSize(12);
-
-doc.text(
-"Name: "+name,
-10,
-30
-);
-
-doc.text(
-"Language: "+lang,
-10,
-40
-);
-
-var yPos = 55;
-
-}
-
-/* ADD TEXT */
-
-let lines =
-doc.splitTextToSize(
-content,
-180
-);
-
-doc.text(
-lines,
-10,
-yPos
-);
-
-/* SAVE */
-
-doc.save(
-"Interview_"+name+".pdf"
-);
-
-}
-
-}()">
+onclick="savePDF()">
 📄 PDF सेव करें
 </button>
 
@@ -331,9 +213,7 @@ onclick="copyText()">
 
 <script>
 
-let recognition;
-
-/* SPEECH TO TEXT */
+/* SPEECH */
 
 function startListening(){
 
@@ -342,7 +222,7 @@ alert("Speech recognition supported नहीं है");
 return;
 }
 
-recognition =
+let recognition =
 new webkitSpeechRecognition();
 
 recognition.lang="hi-IN";
@@ -354,16 +234,15 @@ recognition.onresult=function(event){
 let speechText =
 event.results[0][0].transcript;
 
-let textarea =
-document.getElementById("content");
-
-textarea.value += speechText + " ";
+document
+.getElementById("content")
+.value += speechText + " ";
 
 };
 
 }
 
-/* TEXT TO SPEECH */
+/* SPEAK */
 
 function speakText(){
 
@@ -375,8 +254,6 @@ alert("पहले टेक्स्ट लिखें");
 return;
 }
 
-window.speechSynthesis.cancel();
-
 let speech =
 new SpeechSynthesisUtterance(text);
 
@@ -386,49 +263,86 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* SAVE PDF WITH LOGO */
+/* SAVE PDF WITH PHOTO */
 
 function savePDF(){
 
 const { jsPDF } = window.jspdf;
 
 let name =
-document.getElementById("guestName").value;
+document.getElementById("guestName").value || "Interview";
 
 let lang =
-document.getElementById("guestLang").value;
+document.getElementById("guestLang").value || "";
 
 let content =
-document.getElementById("content").value;
+document.getElementById("content").value || "";
+
+let photoInput =
+document.getElementById("guestPhoto");
 
 let doc = new jsPDF();
 
-let img = new Image();
-
-img.src = "logo.png";
-
-img.onload=function(){
-
-doc.addImage(img,"PNG",10,5,40,20);
+/* TITLE */
 
 doc.setFontSize(16);
 
 doc.text(
 "VARTAALAAP INTERVIEW",
-10,35
+10,
+15
 );
+
+/* NAME */
 
 doc.setFontSize(12);
 
 doc.text(
-"Name: "+name,
-10,50
+"Name: " + name,
+10,
+30
 );
 
 doc.text(
-"Language: "+lang,
-10,60
+"Language: " + lang,
+10,
+40
 );
+
+/* ADD PHOTO */
+
+if(photoInput.files[0]){
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+doc.addImage(
+e.target.result,
+"JPEG",
+140,
+20,
+40,
+40
+);
+
+addText();
+
+};
+
+reader.readAsDataURL(
+photoInput.files[0]
+);
+
+}else{
+
+addText();
+
+}
+
+/* ADD TEXT */
+
+function addText(){
 
 let lines =
 doc.splitTextToSize(
@@ -439,14 +353,14 @@ content,
 doc.text(
 lines,
 10,
-75
+60
 );
 
 doc.save(
-"Interview_"+name+".pdf"
+"Interview_" + name + ".pdf"
 );
 
-};
+}
 
 }
 
@@ -456,9 +370,6 @@ function publishInterview(){
 
 let name =
 document.getElementById("guestName").value;
-
-let lang =
-document.getElementById("guestLang").value;
 
 let content =
 document.getElementById("content").value;
@@ -483,12 +394,7 @@ box.className="interview";
 
 box.innerHTML=`
 
-<img src="${e.target.result}"
-class="photo">
-
-<span class="lang">
-${lang.toUpperCase()}
-</span>
+<img src="${e.target.result}" class="photo">
 
 <h3>${name}</h3>
 
@@ -508,36 +414,11 @@ reader.readAsDataURL(
 photoInput.files[0]
 );
 
-}else{
-
-let box =
-document.createElement("div");
-
-box.className="interview";
-
-box.innerHTML=`
-
-<span class="lang">
-${lang.toUpperCase()}
-</span>
-
-<h3>${name}</h3>
-
-<p>${content}</p>
-
-`;
-
-document
-.getElementById("feed")
-.prepend(box);
+}
 
 }
 
-alert("इंटरव्यू पब्लिश हो गया");
-
-}
-
-/* SHARE TEXT */
+/* SHARE */
 
 function getShareText(){
 
@@ -547,20 +428,11 @@ document.getElementById("guestName").value;
 let content =
 document.getElementById("content").value;
 
-let logoURL =
-window.location.origin + "/logo.png";
-
-let text =
-"🎤 VARTAALAAP INTERVIEW\n\n"
-+ "👤 Name: " + name + "\n\n"
-+ content + "\n\n"
-+ "🌐 Logo: " + logoURL;
-
-return text;
+return "🎤 VARTAALAAP INTERVIEW\n\n👤 "
++ name + "\n\n"
++ content;
 
 }
-
-/* FACEBOOK */
 
 function shareFacebook(){
 
@@ -571,14 +443,9 @@ let url =
 "https://www.facebook.com/sharer/sharer.php?quote="
 + encodeURIComponent(text);
 
-window.open(
-url,
-"_blank"
-);
+window.open(url,"_blank");
 
 }
-
-/* WHATSAPP */
 
 function shareWhatsApp(){
 
@@ -589,26 +456,18 @@ let url =
 "https://wa.me/?text="
 + encodeURIComponent(text);
 
-window.open(
-url,
-"_blank"
-);
+window.open(url,"_blank");
 
 }
-
-/* COPY */
 
 function copyText(){
 
 let text =
 getShareText();
 
-navigator.clipboard
-.writeText(text);
+navigator.clipboard.writeText(text);
 
-alert(
-"Text copy हो गया"
-);
+alert("Text copy हो गया");
 
 }
 
