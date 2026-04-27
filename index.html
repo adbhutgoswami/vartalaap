@@ -1,590 +1,692 @@
 <!DOCTYPE html>
 <html lang="hi">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Vartaalaap | इंटरव्यू मंच</title>
-
-<!-- Libraries -->
-
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 <style>
+:root{
+  --orange:#e67e22; --gold:#f39c12;
+  --dark1:#0f2027; --dark2:#203a43; --dark3:#2c5364;
+  --shadow:0 8px 32px rgba(0,0,0,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lato',sans-serif;background:linear-gradient(135deg,#f4f7f6,#e8f0ee);min-height:100vh;}
 
-/* HEADER */
-
+/* ── HEADER ── */
 .main-header{
-
-background: linear-gradient(
-135deg,
-#0f2027,
-#203a43,
-#2c5364
-);
-
-padding:60px 20px;
-
-border-bottom:5px solid #e67e22;
-
-text-align:center;
-
+  background:linear-gradient(135deg,var(--dark1),var(--dark2),var(--dark3));
+  padding:44px 20px 32px;border-bottom:4px solid var(--orange);
+  text-align:center;position:relative;overflow:hidden;
 }
-
-.logo-text{
-
-font-size:48px;
-
-font-weight:bold;
-
-background: linear-gradient(
-90deg,
-#ff7e5f,
-#feb47b
-);
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
+.main-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(230,126,34,.12) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 30%,rgba(109,213,250,.08) 0%,transparent 60%);
 }
-
+/* English "Vartaalaap" — big, bold */
+.logo-en{
+  font-family:'Playfair Display',serif;font-size:56px;font-weight:900;
+  background:linear-gradient(90deg,#ff7e5f,#feb47b,#ffd89b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:3px;position:relative;line-height:1;
+}
+/* Hindi subtitle below */
+.logo-hi{
+  font-family:'Noto Serif Devanagari',serif;
+  font-size:20px;font-weight:600;
+  color:#feb47b;margin-top:6px;
+  letter-spacing:1px;position:relative;
+}
 .logo-line{
-
-display:inline-block;
-
-width:220px;
-height:4px;
-
-background: linear-gradient(
-90deg,
-#ff7e5f,
-#6dd5fa
-);
-
+  display:block;width:200px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--orange),#6dd5fa,transparent);
+  margin:10px auto 0;
 }
+.tagline{color:#c8d8e8;font-size:15px;margin-top:12px;
+  font-family:'Noto Serif Devanagari',serif;position:relative;}
 
-.tagline{
+/* ── LAYOUT ── */
+.container{max-width:860px;margin:auto;padding:28px 16px;}
 
-color:#e0e0e0;
-font-size:18px;
-margin-top:20px;
+.card{background:white;padding:28px;border-radius:16px;
+  box-shadow:var(--shadow);border:1px solid rgba(230,126,34,.08);margin-bottom:26px;}
+.card h2{font-family:'Noto Serif Devanagari',serif;font-size:21px;
+  color:#1a1a2e;margin-bottom:18px;border-left:4px solid var(--orange);padding-left:12px;}
 
+/* ── FORM ── */
+.field-group{margin-bottom:13px;}
+.field-group label{display:block;font-size:12px;font-weight:700;color:#666;
+  margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+input[type="text"],textarea{
+  width:100%;padding:11px 13px;border-radius:8px;
+  border:1.5px solid #ddd;font-size:15px;
+  font-family:'Noto Serif Devanagari',serif;
+  background:#fafafa;transition:border .2s;color:#1a1a2e;
 }
+input[type="text"]:focus,textarea:focus{border-color:var(--orange);outline:none;background:white;}
+input[type="file"]{width:100%;padding:10px;border-radius:8px;
+  border:1.5px dashed #ccc;background:#f9f9f9;cursor:pointer;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
 
-/* BODY */
+/* ── BUTTONS ── */
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px;}
+button{padding:11px 14px;border:none;border-radius:8px;font-weight:700;
+  cursor:pointer;color:white;font-size:13px;flex:1 1 calc(25% - 9px);
+  min-width:120px;transition:transform .15s,box-shadow .15s,opacity .15s;letter-spacing:.3px;}
+button:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.22);opacity:.93;}
+button:active{transform:translateY(0);}
+.btn-listen {background:linear-gradient(135deg,#8e44ad,#a569bd);}
+.btn-speak  {background:linear-gradient(135deg,#27ae60,#2ecc71);}
+.btn-publish{background:linear-gradient(135deg,#e67e22,#f39c12);}
+.btn-clear  {background:linear-gradient(135deg,#c0392b,#e74c3c);}
 
-body{
-font-family:Arial;
-margin:0;
-background:#f4f7f6;
+/* ── SECTION HEAD ── */
+.section-heading{text-align:center;font-family:'Noto Serif Devanagari',serif;
+  font-size:23px;color:#1a1a2e;margin:26px 0 16px;position:relative;}
+.section-heading::after{content:'';display:block;width:55px;height:3px;
+  background:var(--orange);margin:7px auto 0;border-radius:2px;}
+
+/* ── INTERVIEW CARD ── */
+.interview-card{background:white;border-radius:14px;box-shadow:var(--shadow);
+  margin-bottom:20px;overflow:hidden;border:1px solid rgba(230,126,34,.12);
+  animation:fadeUp .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.card-header{background:linear-gradient(135deg,var(--dark1),var(--dark2));
+  padding:15px 18px;display:flex;align-items:center;gap:14px;}
+.card-photo{width:70px;height:70px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--orange);flex-shrink:0;}
+.card-photo-ph{width:70px;height:70px;border-radius:50%;
+  background:linear-gradient(135deg,var(--orange),var(--gold));
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.card-meta{flex:1;min-width:0;}
+.card-guest{font-family:'Noto Serif Devanagari',serif;font-size:19px;
+  font-weight:700;color:white;}
+.card-ivr{font-size:13px;color:#feb47b;margin-top:2px;}
+.card-date{font-size:11px;color:#8ab4c8;margin-top:3px;}
+
+/* icon action buttons */
+.card-actions{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.ic-btn{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex:none;min-width:unset;
+  transition:transform .15s,opacity .15s;}
+.ic-btn:hover{transform:scale(1.14);opacity:.88;}
+.ic-del{background:#c0392b;}
+.ic-pdf{background:#2980b9;}
+.ic-img{background:#9b59b6;}
+.ic-fb {background:#1877f2;}
+.ic-wa {background:#25d366;}
+
+.card-body{padding:18px;font-family:'Noto Serif Devanagari',serif;
+  font-size:15px;line-height:1.85;color:#333;
+  border-top:3px solid var(--orange);white-space:pre-wrap;}
+
+/* ── PDF LIST ── */
+.pdf-list-card{display:none;}
+.pdf-item{display:flex;align-items:center;gap:10px;
+  background:#f9f9f9;border:1px solid #eee;border-radius:8px;
+  padding:10px 13px;margin-bottom:8px;}
+.pdf-item span{flex:1;font-size:14px;color:#333;}
+.pdf-item-btn{background:#2980b9;color:white;border:none;border-radius:6px;
+  padding:6px 12px;cursor:pointer;font-size:12px;font-weight:700;
+  flex:none;min-width:unset;}
+.pdf-item-btn.del{background:#e74c3c;}
+
+/* ══════════════════════════════════════════════════════
+   SHARE MODAL
+══════════════════════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.78);z-index:9999;
+  align-items:center;justify-content:center;
+  padding:16px;backdrop-filter:blur(5px);
 }
-
-.container{
-max-width:850px;
-margin:auto;
-padding:20px;
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:white;border-radius:20px;width:100%;max-width:500px;
+  box-shadow:0 24px 64px rgba(0,0,0,.45);overflow:hidden;
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
 }
+@keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
 
-.card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+.modal-head{
+  background:linear-gradient(135deg,var(--dark1),var(--dark2));
+  padding:15px 20px;display:flex;align-items:center;justify-content:space-between;
 }
+.modal-head h3{color:#feb47b;font-size:16px;font-family:'Noto Serif Devanagari',serif;}
+.modal-x{background:rgba(255,255,255,.15);border:none;color:white;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  flex:none;min-width:unset;transition:background .2s;}
+.modal-x:hover{background:rgba(255,255,255,.3);}
 
-input, textarea{
+.modal-body{padding:18px;}
 
-width:100%;
-padding:12px;
-margin:10px 0;
-border-radius:6px;
-border:1px solid #ccc;
-
+/* preview image inside modal */
+#modalPreviewImg{
+  width:100%;border-radius:10px;border:2px solid var(--orange);
+  display:block;margin-bottom:14px;
 }
-
-.buttons{
-
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-
+.modal-spinner{
+  text-align:center;padding:40px 0;font-size:14px;color:#888;
+  font-family:'Noto Serif Devanagari',serif;
 }
-
-button{
-
-padding:12px;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
-flex:1;
-color:white;
-
+.modal-spinner .spin{
+  display:inline-block;width:36px;height:36px;
+  border:4px solid #eee;border-top:4px solid var(--orange);
+  border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px;
 }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.listen{ background:#8e44ad; }
-.speak{ background:#27ae60; }
-.savepdf{ background:#2980b9; }
-.publish{ background:#e67e22; }
-.sharefb{ background:#1877f2; }
-.sharewa{ background:#25d366; }
-.copybtn{ background:#34495e; }
-.shareimg{ background:#9b59b6; }
-
-.photo{
-
-width:120px;
-height:120px;
-object-fit:cover;
-border-radius:10px;
-
+/* info box */
+.modal-info{
+  background:#fff8f0;border:1px solid #f0c080;border-radius:9px;
+  padding:11px 14px;font-size:13px;color:#7a4a00;
+  margin-bottom:14px;line-height:1.6;
 }
+.modal-info b{color:var(--orange);}
 
-.interview{
-
-border-left:6px solid #e67e22;
-padding:15px;
-margin-top:15px;
-background:#fff;
-border-radius:8px;
-
+/* share buttons inside modal */
+.modal-btns{display:flex;gap:10px;}
+.modal-btn{
+  flex:1;padding:13px 10px;border:none;border-radius:10px;
+  font-size:14px;font-weight:700;cursor:pointer;color:white;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  min-width:unset;transition:transform .15s,box-shadow .15s;
 }
+.modal-btn:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.25);}
+.modal-btn-wa {background:linear-gradient(135deg,#128c7e,#25d366);}
+.modal-btn-fb {background:linear-gradient(135deg,#1877f2,#4196f3);}
+.modal-btn-dl {background:linear-gradient(135deg,#555,#888);}
 
-/* PDF Layout */
+/* steps row */
+.modal-steps{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+.step-badge{background:#f2f5f8;border-radius:20px;padding:5px 11px;
+  font-size:12px;color:#555;display:flex;align-items:center;gap:5px;}
+.step-num{width:17px;height:17px;background:var(--orange);color:white;
+  border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-#pdfArea{
-
-width:800px;
-padding:20px;
-background:white;
-
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--dark1);color:white;
+  padding:11px 22px;border-radius:28px;font-size:14px;font-weight:600;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);border:1.5px solid var(--orange);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;
+  z-index:99999;opacity:0;pointer-events:none;white-space:nowrap;
 }
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
+/* ── SHARE IMAGE TEMPLATE (off-screen render) ── */
+#shareTemplate{
+  position:fixed;left:-9999px;top:0;
+  width:760px;padding:36px;
+  background:linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%);
+  font-family:'Lato',sans-serif;
+}
+.tpl-border{border:3px solid #e67e22;border-radius:14px;padding:28px;}
+.tpl-brand{
+  font-family:'Playfair Display',serif;font-size:34px;font-weight:900;
+  color:#ff7e5f;letter-spacing:2px;margin-bottom:2px;
+}
+.tpl-brand-hi{font-size:15px;color:#feb47b;margin-bottom:16px;letter-spacing:.5px;}
+.tpl-divider{height:2px;background:linear-gradient(90deg,#e67e22,transparent);margin-bottom:22px;}
+.tpl-main{display:flex;gap:20px;align-items:flex-start;}
+.tpl-photo{width:110px;height:110px;border-radius:50%;object-fit:cover;
+  border:4px solid #e67e22;flex-shrink:0;}
+.tpl-photo-ph{width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,#e67e22,#f39c12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;flex-shrink:0;}
+.tpl-info{flex:1;}
+.tpl-guest{font-size:24px;font-weight:700;color:white;margin-bottom:5px;}
+.tpl-ivr{font-size:14px;color:#feb47b;margin-bottom:14px;}
+.tpl-content{font-size:14px;color:#dde8ef;line-height:1.7;
+  border-left:3px solid #e67e22;padding-left:13px;
+  max-height:200px;overflow:hidden;white-space:pre-wrap;}
+.tpl-footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;}
+.tpl-date{font-size:12px;color:#8ab4c8;}
+.tpl-logo{font-size:13px;color:#e67e22;font-weight:700;letter-spacing:1px;}
+
+@media(max-width:600px){
+  .logo-en{font-size:40px;}
+  .logo-hi{font-size:16px;}
+  .two-col{grid-template-columns:1fr;}
+  button{flex:1 1 calc(50% - 9px);}
+  .card{padding:18px;}
+  .modal-btns{flex-direction:column;}
+}
 </style>
-
 </head>
-
 <body>
 
+<!-- ════════════════ HEADER ════════════════ -->
 <header class="main-header">
-
-<h1 class="logo-text">
-
-Vartaalaap
-
-<span class="logo-line"></span>
-
-</h1>
-
-<p class="tagline">
-
-✦ हर भाषा, हर कहानी, एक मंच ✦
-
-</p>
-
+  <div class="logo-en">Vartaalaap</div>
+  <div class="logo-hi">वार्तालाप — इंटरव्यू मंच</div>
+  <span class="logo-line"></span>
+  <p class="tagline">✦ हर भाषा, हर कहानी, एक मंच ✦</p>
 </header>
 
 <div class="container">
 
-<div class="card">
+  <!-- ════════════════ FORM CARD ════════════════ -->
+  <div class="card">
+    <h2>नया इंटरव्यू दर्ज करें</h2>
 
-<h2>नया इंटरव्यू दर्ज करें</h2>
+    <div class="two-col">
+      <div class="field-group">
+        <label>मेहमान का नाम (Guest Name)</label>
+        <input type="text" id="guestName" placeholder="जैसे: राजेश शर्मा">
+      </div>
+      <div class="field-group">
+        <label>इंटरव्यूकर्ता का नाम (Interviewer)</label>
+        <input type="text" id="interviewerName" placeholder="जैसे: अंजली सिंह">
+      </div>
+    </div>
 
-<input id="guestName" placeholder="नाम">
+    <div class="field-group">
+      <label>मेहमान की फोटो</label>
+      <input type="file" id="guestPhoto" accept="image/*">
+    </div>
 
-<input id="guestLang" placeholder="भाषा">
+    <div class="field-group">
+      <label>इंटरव्यू सामग्री</label>
+      <textarea id="content" rows="7" placeholder="यहाँ इंटरव्यू लिखें या 🎙 बटन से बोलें..."></textarea>
+    </div>
 
-<input type="file" id="guestPhoto">
+    <div class="buttons">
+      <button class="btn-listen"  onclick="startListening()">🎙 बोलकर लिखें</button>
+      <button class="btn-speak"   onclick="speakText()">🔊 सुनें</button>
+      <button class="btn-publish" onclick="publishInterview()">✅ Publish करें</button>
+      <button class="btn-clear"   onclick="clearForm()">🗑 फॉर्म साफ करें</button>
+    </div>
+  </div>
 
-<textarea id="content"
-rows="6"
-placeholder="यहाँ इंटरव्यू लिखें या बोलें">
-</textarea>
+  <!-- ════════════════ SAVED PDFs ════════════════ -->
+  <div class="card pdf-list-card" id="pdfCard">
+    <h2>📁 सेव की गई PDF फ़ाइलें</h2>
+    <div id="pdfList"></div>
+  </div>
 
-<div class="buttons">
+  <!-- ════════════════ FEED ════════════════ -->
+  <div class="section-heading">ताज़ा इंटरव्यू</div>
+  <div id="feed"></div>
 
-<button class="listen"
-onclick="startListening()">
-🎙 बोलकर लिखें
-</button>
+</div><!-- /container -->
 
-<button class="speak"
-onclick="speakText()">
-🔊 पढ़ें
-</button>
+<!-- ════════════════ SHARE MODAL ════════════════ -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle">📤 शेयर करें</h3>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
 
-<button class="savepdf"
-onclick="savePDF()">
-📄 Multi-Page PDF
-</button>
+      <!-- spinner while building image -->
+      <div class="modal-spinner" id="modalSpinner">
+        <div class="spin"></div><br>
+        इंटरव्यू की Image बन रही है...
+      </div>
 
-<button class="shareimg"
-onclick="shareAsImage()">
-🖼 Share as Image
-</button>
+      <!-- preview — hidden until ready -->
+      <img id="modalPreviewImg" style="display:none;" alt="preview">
 
-<button class="publish"
-onclick="publishInterview()">
-✅ पब्लिश करें
-</button>
+      <!-- info box -->
+      <div class="modal-info" id="modalInfo" style="display:none;">
+        <b>📌 फोटो के साथ Image:</b> नीचे <b>Image Download</b> करें, फिर
+        WhatsApp / Facebook पर जाकर उस Image को attach करके भेजें।<br>
+        <b>Text</b> नीचे के बटन से सीधे भेजा जा सकता है।
+      </div>
 
-<button class="sharefb"
-onclick="shareFacebook()">
-📘 Facebook
-</button>
+      <div class="modal-btns" id="modalBtns" style="display:none;">
+        <button class="modal-btn modal-btn-dl" id="btnDownload">⬇ Image Download</button>
+        <button class="modal-btn modal-btn-wa" id="btnWhatsApp">📱 WhatsApp</button>
+        <button class="modal-btn modal-btn-fb" id="btnFacebook">📘 Facebook</button>
+      </div>
 
-<button class="sharewa"
-onclick="shareWhatsApp()">
-📱 WhatsApp
-</button>
+      <div class="modal-steps" id="modalSteps" style="display:none;">
+        <div class="step-badge"><div class="step-num">1</div> Image Download करें</div>
+        <div class="step-badge"><div class="step-num">2</div> App खोलें</div>
+        <div class="step-badge"><div class="step-num">3</div> Image Attach करें</div>
+      </div>
 
-<button class="copybtn"
-onclick="copyText()">
-📋 Copy Text
-</button>
-
+    </div>
+  </div>
 </div>
 
+<!-- ════════════════ SHARE IMAGE TEMPLATE ════════════════ -->
+<div id="shareTemplate">
+  <div class="tpl-border">
+    <div class="tpl-brand">Vartaalaap</div>
+    <div class="tpl-brand-hi">वार्तालाप — इंटरव्यू मंच</div>
+    <div class="tpl-divider"></div>
+    <div class="tpl-main">
+      <div id="tplPhotoWrap"></div>
+      <div class="tpl-info">
+        <div class="tpl-guest"  id="tplGuest"></div>
+        <div class="tpl-ivr"   id="tplIvr"></div>
+        <div class="tpl-content" id="tplContent"></div>
+      </div>
+    </div>
+    <div class="tpl-footer">
+      <div class="tpl-date" id="tplDate"></div>
+      <div class="tpl-logo">🎤 VARTAALAAP</div>
+    </div>
+  </div>
 </div>
 
-<h2 style="text-align:center;">
-ताज़ा इंटरव्यू
-</h2>
-
-<div id="feed"></div>
-
-</div>
-
-<!-- Hidden Layout -->
-
-<div id="pdfArea" style="display:none;">
-
-<h2>🎤 VARTAALAAP INTERVIEW</h2>
-
-<p id="pdfName"></p>
-
-<img id="pdfPhoto"
-style="width:120px; margin-top:10px;">
-
-<p id="pdfContent"
-style="margin-top:20px;"></p>
-
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
+/* ══ STATE ══════════════════════════════════════ */
+let savedPDFs = JSON.parse(localStorage.getItem("savedPDFs")||"[]");
+let modalCanvas = null; // current built canvas for the open modal
 
-/* AUTO LOAD */
+/* ══ INIT ════════════════════════════════════════ */
+window.onload = function(){
+  const saved = localStorage.getItem("interviews");
+  if(saved) document.getElementById("feed").innerHTML = saved;
+  renderPDFList();
+};
 
-window.onload=function(){
-
-let saved=
-localStorage.getItem("interviews");
-
-if(saved){
-
-document
-.getElementById("feed")
-.innerHTML=saved;
-
+/* ══ TOAST ═══════════════════════════════════════ */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 3200);
 }
 
+/* ══ CLEAR FORM ══════════════════════════════════ */
+function clearForm(){
+  ["guestName","interviewerName","content"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("guestPhoto").value="";
+  showToast("✅ फॉर्म साफ हो गया");
 }
 
-/* SPEECH */
-
+/* ══ SPEECH INPUT ════════════════════════════════ */
 function startListening(){
-
-let recognition=
-new webkitSpeechRecognition();
-
-recognition.lang="hi-IN";
-
-recognition.start();
-
-recognition.onresult=function(event){
-
-document
-.getElementById("content")
-.value +=
-event.results[0][0].transcript;
-
-};
-
+  if(!('webkitSpeechRecognition' in window)){showToast("यह ब्राउज़र Speech नहीं जानता");return;}
+  const rec = new webkitSpeechRecognition();
+  rec.lang="hi-IN"; rec.start();
+  showToast("🎙 बोलना शुरू करें...");
+  rec.onresult = e => document.getElementById("content").value += e.results[0][0].transcript+" ";
+  rec.onerror  = () => showToast("⚠ माइक्रोफोन में समस्या");
 }
 
-/* SPEAK */
-
+/* ══ TEXT TO SPEECH ══════════════════════════════ */
 function speakText(){
-
-let text=
-document.getElementById("content").value;
-
-let speech=
-new SpeechSynthesisUtterance(text);
-
-speech.lang="hi-IN";
-
-window.speechSynthesis.speak(speech);
-
+  const txt = document.getElementById("content").value;
+  if(!txt){showToast("पहले कुछ लिखें");return;}
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang="hi-IN"; window.speechSynthesis.speak(u);
 }
 
-/* PREPARE LAYOUT */
+/* ══ BUILD SHARE IMAGE TEMPLATE → canvas ═════════
+   Uses an off-screen div rendered by html2canvas.
+   Photo is drawn via a same-origin base64 data URL,
+   so CORS is never an issue.
+════════════════════════════════════════════════ */
+function buildShareImage(data, callback){
+  const tpl  = document.getElementById("shareTemplate");
+  const wrap = document.getElementById("tplPhotoWrap");
 
-function preparePDF(callback){
+  document.getElementById("tplGuest").textContent   = data.guestName || "";
+  document.getElementById("tplIvr").textContent     = data.interviewerName
+                                                        ? "इंटरव्यूकर्ता: "+data.interviewerName : "";
+  document.getElementById("tplContent").textContent = data.content || "";
+  document.getElementById("tplDate").textContent    = data.date    || "";
+  wrap.innerHTML = "";
 
-let name=
-document.getElementById("guestName").value;
+  function doRender(){
+    // make visible (off-screen via position:fixed left:-9999px)
+    tpl.style.visibility = "visible";
+    html2canvas(tpl,{
+      scale:1.8,
+      useCORS:true,
+      allowTaint:true,
+      backgroundColor:null,
+      logging:false
+    }).then(canvas=>{
+      tpl.style.visibility = "hidden";
+      callback(canvas);
+    });
+  }
 
-let content=
-document.getElementById("content").value;
+  if(data.photoSrc && data.photoSrc.startsWith("data:")){
+    // base64 image — load into <img> then render
+    const img = document.createElement("img");
+    img.className = "tpl-photo";
+    img.onload  = doRender;
+    img.onerror = ()=>{ wrap.innerHTML=""; addPh(); doRender(); };
+    img.src     = data.photoSrc;
+    wrap.appendChild(img);
+  } else {
+    addPh(); doRender();
+  }
 
-let photoInput=
-document.getElementById("guestPhoto");
-
-document
-.getElementById("pdfName")
-.innerText="नाम: "+name;
-
-document
-.getElementById("pdfContent")
-.innerText=content;
-
-let pdfPhoto=
-document.getElementById("pdfPhoto");
-
-if(photoInput.files[0]){
-
-let reader=
-new FileReader();
-
-reader.onload=function(e){
-
-pdfPhoto.src=e.target.result;
-
-generateCanvas();
-
-};
-
-reader.readAsDataURL(photoInput.files[0]);
-
-}else{
-
-generateCanvas();
-
+  function addPh(){
+    const ph=document.createElement("div");
+    ph.className="tpl-photo-ph"; ph.textContent="🎤";
+    wrap.appendChild(ph);
+  }
 }
 
-function generateCanvas(){
-
-let pdfArea=
-document.getElementById("pdfArea");
-
-pdfArea.style.display="block";
-
-html2canvas(pdfArea).then(canvas=>{
-
-pdfArea.style.display="none";
-
-callback(canvas);
-
-});
-
-}
-
-}
-
-/* MULTI PAGE PDF */
-
-function savePDF(){
-
-preparePDF(function(canvas){
-
-const { jsPDF }=window.jspdf;
-
-let imgData=
-canvas.toDataURL("image/png");
-
-let pdf=
-new jsPDF();
-
-let width=210;
-
-let height=
-canvas.height * width /
-canvas.width;
-
-let y=0;
-
-while(height>0){
-
-pdf.addImage(
-imgData,
-"PNG",
-0,
-y,
-width,
-height
-);
-
-height-=297;
-
-if(height>0){
-
-pdf.addPage();
-
-y-=297;
-
-}
-
-}
-
-pdf.save("Interview.pdf");
-
-});
-
-}
-
-/* SHARE IMAGE */
-
-function shareAsImage(){
-
-preparePDF(function(canvas){
-
-let link=
-document.createElement("a");
-
-link.download="Interview_Image.png";
-
-link.href=canvas.toDataURL();
-
-link.click();
-
-});
-
-}
-
-/* WHATSAPP IMAGE SHARE */
-
-function shareWhatsApp(){
-
-preparePDF(function(canvas){
-
-let link=
-document.createElement("a");
-
-link.download="Interview_Image.png";
-
-link.href=canvas.toDataURL();
-
-link.click();
-
-setTimeout(function(){
-
-window.open(
-"https://wa.me/?text="
-+ encodeURIComponent(
-"📢 Vartaalaap Interview — Image attached"
-)
-
-);
-
-},1000);
-
-});
-
-}
-
-/* FACEBOOK */
-
-function shareFacebook(){
-
-window.open(
-"https://www.facebook.com/sharer/sharer.php"
-);
-
-}
-
-/* COPY */
-
-function copyText(){
-
-let name=
-document.getElementById("guestName").value;
-
-let content=
-document.getElementById("content").value;
-
-navigator.clipboard.writeText(
-
-"🎤 Vartaalaap Interview\n\n"
-+ name + "\n\n"
-+ content
-
-);
-
-alert("Text copied");
-
-}
-
-/* PUBLISH */
-
+/* ══ PUBLISH ═════════════════════════════════════ */
 function publishInterview(){
+  const guestName      = document.getElementById("guestName").value.trim();
+  const interviewerName= document.getElementById("interviewerName").value.trim();
+  const content        = document.getElementById("content").value.trim();
+  const photoInput     = document.getElementById("guestPhoto");
 
-let name=
-document.getElementById("guestName").value;
+  if(!guestName){showToast("कृपया मेहमान का नाम लिखें");return;}
+  if(!content)  {showToast("इंटरव्यू की सामग्री खाली है");return;}
 
-let content=
-document.getElementById("content").value;
+  const dateString = new Date().toLocaleString("hi-IN");
 
-let photoInput=
-document.getElementById("guestPhoto");
+  function makeCard(photoSrc){
+    const photoHTML = photoSrc
+      ? `<img src="${photoSrc}" class="card-photo" alt="photo">`
+      : `<div class="card-photo-ph">🎤</div>`;
 
-let reader=
-new FileReader();
+    const box = document.createElement("div");
+    box.className = "interview-card";
+    // store all data as dataset for later use by share/pdf buttons
+    box.dataset.guest       = guestName;
+    box.dataset.interviewer = interviewerName;
+    box.dataset.content     = content;
+    box.dataset.photo       = photoSrc||"";
+    box.dataset.date        = dateString;
 
-reader.onload=function(e){
+    box.innerHTML=`
+      <div class="card-header">
+        ${photoHTML}
+        <div class="card-meta">
+          <div class="card-guest">${guestName}</div>
+          ${interviewerName?`<div class="card-ivr">🎙 इंटरव्यूकर्ता: ${interviewerName}</div>`:""}
+          <div class="card-date">📅 ${dateString}</div>
+        </div>
+        <div class="card-actions">
+          <button class="ic-btn ic-pdf" title="PDF सेव करें"   onclick="saveCardPDF(this)">📄</button>
+          <button class="ic-btn ic-img" title="Image Download"  onclick="openShareModal(this,'img')">🖼</button>
+          <button class="ic-btn ic-wa"  title="WhatsApp शेयर"  onclick="openShareModal(this,'wa')">📱</button>
+          <button class="ic-btn ic-fb"  title="Facebook शेयर"  onclick="openShareModal(this,'fb')">📘</button>
+          <button class="ic-btn ic-del" title="डिलीट करें"     onclick="deleteCard(this)">🗑</button>
+        </div>
+      </div>
+      <div class="card-body">${content}</div>`;
 
-let box=
-document.createElement("div");
+    document.getElementById("feed").prepend(box);
+    saveFeed();
+    showToast("✅ इंटरव्यू publish हो गया!");
+  }
 
-box.className="interview";
-
-box.innerHTML=`
-
-<img src="${e.target.result}" class="photo">
-
-<h3>${name}</h3>
-
-<p>${content}</p>
-
-`;
-
-document
-.getElementById("feed")
-.prepend(box);
-
-/* AUTO SAVE */
-
-localStorage.setItem(
-"interviews",
-document.getElementById("feed").innerHTML
-);
-
-};
-
-if(photoInput.files[0]){
-
-reader.readAsDataURL(photoInput.files[0]);
-
+  if(photoInput.files[0]){
+    const reader=new FileReader();
+    reader.onload=e=>makeCard(e.target.result);
+    reader.readAsDataURL(photoInput.files[0]);
+  } else {
+    makeCard(null);
+  }
 }
 
+function saveFeed(){
+  localStorage.setItem("interviews",document.getElementById("feed").innerHTML);
+}
+function deleteCard(btn){
+  if(!confirm("क्या आप इस इंटरव्यू को हटाना चाहते हैं?"))return;
+  btn.closest(".interview-card").remove();
+  saveFeed();
+  showToast("🗑 इंटरव्यू हटाया गया");
+}
+function getCardData(btn){
+  const c=btn.closest(".interview-card");
+  return{guestName:c.dataset.guest,interviewerName:c.dataset.interviewer,
+         content:c.dataset.content,photoSrc:c.dataset.photo,date:c.dataset.date};
 }
 
+/* ══ SHARE MODAL ═════════════════════════════════
+   Opens a modal, builds the share image,
+   shows a preview, then lets user choose action.
+════════════════════════════════════════════════ */
+function openShareModal(btn, defaultAction){
+  const data = getCardData(btn);
+  modalCanvas = null;
+
+  // reset modal UI
+  document.getElementById("modalPreviewImg").style.display="none";
+  document.getElementById("modalInfo").style.display="none";
+  document.getElementById("modalBtns").style.display="none";
+  document.getElementById("modalSteps").style.display="none";
+  document.getElementById("modalSpinner").style.display="block";
+
+  const titleMap = {img:"🖼 Image Download करें", wa:"📱 WhatsApp पर शेयर करें", fb:"📘 Facebook पर शेयर करें"};
+  document.getElementById("modalTitle").textContent = titleMap[defaultAction]||"📤 शेयर करें";
+
+  document.getElementById("shareModal").classList.add("open");
+
+  // build image
+  buildShareImage(data, function(canvas){
+    modalCanvas = canvas;
+
+    // show preview
+    const prevImg = document.getElementById("modalPreviewImg");
+    prevImg.src   = canvas.toDataURL("image/png");
+    prevImg.style.display="block";
+    document.getElementById("modalSpinner").style.display="none";
+    document.getElementById("modalInfo").style.display="block";
+    document.getElementById("modalBtns").style.display="flex";
+    document.getElementById("modalSteps").style.display="flex";
+
+    // wire up buttons
+    const name = data.guestName||"Interview";
+    const text  = "🎤 *Vartaalaap Interview*\n\n"
+                + "*मेहमान:* "+data.guestName+"\n"
+                + (data.interviewerName?"*इंटरव्यूकर्ता:* "+data.interviewerName+"\n":"")
+                + "\n"+data.content+"\n\n📅 "+data.date;
+
+    document.getElementById("btnDownload").onclick = function(){
+      downloadCanvasAs(canvas,"Vartaalaap_"+name+".png");
+      showToast("✅ Image download हो रही है");
+    };
+
+    document.getElementById("btnWhatsApp").onclick = function(){
+      downloadCanvasAs(canvas,"Vartaalaap_WhatsApp.png");
+      setTimeout(()=>{
+        window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+      },900);
+      showToast("📱 Image download + WhatsApp खुल रहा है");
+    };
+
+    document.getElementById("btnFacebook").onclick = function(){
+      downloadCanvasAs(canvas,"Vartaalaap_Facebook.png");
+      navigator.clipboard.writeText(text).catch(()=>{});
+      setTimeout(()=> window.open("https://www.facebook.com/","_blank"), 900);
+      showToast("📘 Image download + Facebook खुल रहा है • Text clipboard में है!");
+    };
+  });
+}
+
+function closeModal(){
+  document.getElementById("shareModal").classList.remove("open");
+  modalCanvas=null;
+}
+// close on overlay click
+document.getElementById("shareModal").addEventListener("click",function(e){
+  if(e.target===this) closeModal();
+});
+
+function downloadCanvasAs(canvas,filename){
+  const a=document.createElement("a");
+  a.download=filename;
+  a.href=canvas.toDataURL("image/png");
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+/* ══ PDF ══════════════════════════════════════════ */
+function saveCardPDF(btn){
+  const data=getCardData(btn);
+  showToast("⏳ PDF बन रही है...");
+  buildShareImage(data,function(canvas){
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+    const W=297,H=210;
+    const imgH=canvas.height*W/canvas.width;
+    const imgData=canvas.toDataURL("image/png");
+    let y=0,remH=imgH;
+    while(remH>0){
+      pdf.addImage(imgData,"PNG",0,y,W,imgH);
+      remH-=H; y-=H;
+      if(remH>0) pdf.addPage();
+    }
+    const filename="Vartaalaap_"+(data.guestName||"Interview")+"_"+Date.now()+".pdf";
+    const entry={id:"pdf_"+Date.now(),name:filename,
+                 dataUrl:pdf.output("datauristring"),date:new Date().toLocaleString("hi-IN")};
+    savedPDFs.unshift(entry);
+    localStorage.setItem("savedPDFs",JSON.stringify(savedPDFs));
+    renderPDFList();
+    pdf.save(filename);
+    showToast("✅ PDF सेव हो गई");
+  });
+}
+
+/* ══ PDF LIST ═════════════════════════════════════ */
+function renderPDFList(){
+  const card=document.getElementById("pdfCard");
+  const list=document.getElementById("pdfList");
+  if(!savedPDFs.length){card.style.display="none";return;}
+  card.style.display="block";
+  list.innerHTML="";
+  savedPDFs.forEach(p=>{
+    const item=document.createElement("div");
+    item.className="pdf-item";
+    item.innerHTML=`
+      <span>📄 ${p.name}<br><small style="color:#999">${p.date}</small></span>
+      <button class="pdf-item-btn" onclick="downloadPDF('${p.id}')">⬇ Download</button>
+      <button class="pdf-item-btn del" onclick="deletePDF('${p.id}')">🗑 Delete</button>`;
+    list.appendChild(item);
+  });
+}
+function downloadPDF(id){
+  const p=savedPDFs.find(x=>x.id===id); if(!p)return;
+  const a=document.createElement("a"); a.href=p.dataUrl; a.download=p.name; a.click();
+}
+function deletePDF(id){
+  if(!confirm("क्या आप यह PDF हटाना चाहते हैं?"))return;
+  savedPDFs=savedPDFs.filter(x=>x.id!==id);
+  localStorage.setItem("savedPDFs",JSON.stringify(savedPDFs));
+  renderPDFList(); showToast("🗑 PDF हटाई गई");
+}
 </script>
-
 </body>
-
 </html>
