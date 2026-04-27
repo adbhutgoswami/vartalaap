@@ -25,8 +25,6 @@ background: linear-gradient(
 
 padding:60px 20px;
 
-position:relative;
-
 border-bottom:5px solid #e67e22;
 
 text-align:center;
@@ -59,13 +57,8 @@ background: linear-gradient(
 
 .logo-line{
 
-display:inline-block;
-
 width:220px;
-
 height:4px;
-
-border-radius:3px;
 
 background: linear-gradient(
 90deg,
@@ -78,9 +71,7 @@ background: linear-gradient(
 .tagline{
 
 color:#e0e0e0;
-
 font-size:18px;
-
 margin-top:20px;
 
 }
@@ -100,9 +91,7 @@ background:#f4f7f6;
 .container{
 
 max-width:850px;
-
 margin:auto;
-
 padding:20px;
 
 }
@@ -136,9 +125,7 @@ border:1px solid #ccc;
 .buttons{
 
 display:flex;
-
 flex-wrap:wrap;
-
 gap:10px;
 
 }
@@ -186,7 +173,6 @@ border-radius:8px;
 .photo{
 
 width:120px;
-
 height:120px;
 
 object-fit:cover;
@@ -330,46 +316,23 @@ window.speechSynthesis.speak(speech);
 
 }
 
-/* PDF WITH HINDI */
+/* SAFE WORKING PDF */
 
-async function savePDF(){
+function savePDF(){
 
 const { jsPDF } = window.jspdf;
 
 let name =
-document.getElementById("guestName").value;
+document.getElementById("guestName").value || "";
 
 let content =
-document.getElementById("content").value;
+document.getElementById("content").value || "";
 
 let photoInput =
 document.getElementById("guestPhoto");
 
 let doc =
 new jsPDF();
-
-/* LOAD FONT */
-
-let font =
-await fetch(
-"NotoSansDevanagari-Regular.ttf"
-)
-.then(res=>res.arrayBuffer());
-
-doc.addFileToVFS(
-"NotoSans.ttf",
-font
-);
-
-doc.addFont(
-"NotoSans.ttf",
-"NotoSans",
-"normal"
-);
-
-doc.setFont(
-"NotoSans"
-);
 
 /* TITLE */
 
@@ -383,6 +346,8 @@ doc.text(
 
 /* NAME */
 
+doc.setFontSize(12);
+
 doc.text(
 "नाम: "+name,
 10,
@@ -393,9 +358,10 @@ doc.text(
 
 if(photoInput.files[0]){
 
-let reader = new FileReader();
+let reader =
+new FileReader();
 
-reader.onload = function(e){
+reader.onload=function(e){
 
 doc.addImage(
 e.target.result,
@@ -410,9 +376,7 @@ addText();
 
 };
 
-reader.readAsDataURL(
-photoInput.files[0]
-);
+reader.readAsDataURL(photoInput.files[0]);
 
 }else{
 
