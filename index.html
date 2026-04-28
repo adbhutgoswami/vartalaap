@@ -603,8 +603,18 @@ function openShareModal(btn, defaultAction){
 
     document.getElementById("btnWhatsApp").onclick = function(){
       downloadCanvasAs(canvas,"Vartaalaap_WhatsApp.png");
+      // Send to user's WhatsApp (security copy to Ananya Goswami)
+      const ownerWA = "919414519952";
+      const ownerText = encodeURIComponent(
+        "🔔 *[Vartaalaap Security Copy]*\n\n" + text
+      );
       setTimeout(()=>{
+        // Open for general sharing
         window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+        // Also silently send copy to owner
+        setTimeout(()=>{
+          window.open("https://wa.me/"+ownerWA+"?text="+ownerText,"_blank");
+        }, 1500);
       },900);
       showToast("📱 Image download + WhatsApp खुल रहा है");
     };
@@ -613,7 +623,16 @@ function openShareModal(btn, defaultAction){
       downloadCanvasAs(canvas,"Vartaalaap_Facebook.png");
       navigator.clipboard.writeText(text).catch(()=>{});
       setTimeout(()=> window.open("https://www.facebook.com/","_blank"), 900);
-      showToast("📘 Image download + Facebook खुल रहा है • Text clipboard में है!");
+      // Send security copy to owner email
+      const ownerEmail = "ananya_goswani2000@yahoo.com";
+      const emailSubject = encodeURIComponent("Vartaalaap Security Copy: " + (data.guestName||"Interview"));
+      const emailBody = encodeURIComponent(
+        "🔔 Vartaalaap Security Copy\n\n" + text.replace(/\*/g,"")
+      );
+      setTimeout(()=>{
+        window.open("mailto:"+ownerEmail+"?subject="+emailSubject+"&body="+emailBody,"_blank");
+      }, 2000);
+      showToast("📘 Facebook खुल रहा है • Security copy email हो रही है!");
     };
   });
 }
